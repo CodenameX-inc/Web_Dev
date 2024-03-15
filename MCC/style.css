@@ -1,0 +1,82 @@
+/* root attributes and variables */
+:root {
+    --blue-light: #45A6DB;
+    --blue-dark: #114964;
+    --blue-dark-2: #1D374B;
+    --yellow-light: #f6c90e;
+    --green-light: #1ab79d;
+    --gray-light: #8A8B8A;
+    --black-color: #0d0f10;
+ 
+    --body-padding: 2rem 0 0 2rem;
+    --container-padding: 2rem;
+    --title-font-size: 5rem;
+    --title-font-weight: 700;
+    --description-font-size: 1rem;
+}
+
+/* setting the theme attribues */
+
+/* light theme */
+[data-theme="light-theme"] {
+    --bg-color: #fff;
+    --nav-menu-text: var(--blue-dark);
+    --button-bg: var(--blue-light);
+    --button-text: #fff;
+    --title-first: var(--blue-dark);
+    --title-second: var(--blue-light);
+    --hover-color: var(--blue-dark);
+    --menu-hover-color: var(--blue-light);
+    
+    /* Button styles for light theme */
+    .rounded-button {
+        background-color: var(--button-bg);
+        border: none;
+        color: var(--button-text);
+        padding: 10px 20px; /* Adjust padding as needed */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 20px; /* Rounded corners */
+    }
+
+    /* Hover effect for button in light theme */
+    .rounded-button:hover {
+        background-color: var(--hover-color); /* Darker shade of blue */
+    }
+}
+
+/* dark theme */
+[data-theme="dark-theme"] {
+    --bg-color: var(--black-color);
+    --nav-menu-text: #fff;
+    --button-bg: var(--yellow-light);
+    --button-text: #000;
+    --title-first: var(--yellow-light);
+    --title-second: #fff;
+    --hover-color: #fff;
+    --menu-hover-color: var(--yellow-light);
+
+    /* Button styles for dark theme */
+    .rounded-button {
+        background-color: var(--button-bg);
+        border: none;
+        color: var(--button-text);
+        padding: 10px 20px; /* Adjust padding as needed */
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 20px; /* Rounded corners */
+    }
+
+    /* Hover effect for button in dark theme */
+    .rounded-button:hover {
+        background-color: var(--hover-color); /* White */
+    }
+}
