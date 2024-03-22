@@ -12,4 +12,10 @@ const PORT = 5000;
 const DB_PATH = './database/TaskList.sqlite';
 const tableName = 'TaskList';
 
-export {express, cors, fs, bodyParser, rootDir, PORT, DB_PATH, tableName};
+const dbConfig = {
+    user : "admin",
+    password : "Abeh_CP_karle_warna_job_nahi_milegi",
+    connectString: "localhost/orcl"
+};
+
+export {express, dbConfig, cors, fs, bodyParser, rootDir, PORT, DB_PATH, tableName};
