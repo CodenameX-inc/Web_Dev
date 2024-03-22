@@ -1,4 +1,4 @@
-import {express, cors, fs, bodyParser, rootDir, PORT} from './config/config.js';
+import {express, cors, fs, bodyParser, rootDir, PORT} from './config.js';
 const app = express();
 import tasksRoute from './routes/TasksRoute.js'
 
