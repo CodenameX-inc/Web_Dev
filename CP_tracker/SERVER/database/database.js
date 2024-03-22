@@ -1,6 +1,19 @@
 import { oracledb } from 'oracledb';
+import { dbConfig } from '../config.js';
 import { platform } from 'os';
 oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+
+async function connection() {
+    // let db="";
+    try{
+     const db = await oracledb.getConnection(dbConfig);
+    return db;
+    }
+    catch (e) {
+    console.log("ERROR CONNECTING DB: "+e.message);
+    return;
+    }
+}
 
 async function createTable() {
     let db;
@@ -38,21 +51,6 @@ async function closePool() {
     }
 }
 
-async function connection() {
-    // let db="";
-    try{
-     const db = await oracledb.getConnection({
-        user : "admin",
-        password : "Abeh_CP_karle_warna_job_nahi_milegi",
-        connectString: "localhost/orcl"
-    });
-    return db;
-    }
-    catch (e) {
-    console.log("ERROR CONNECTING DB: "+e.message);
-    return;
-    }
-}
 export async function getAllTasks() {
     createTable();   //create table if not exists
     const db = connection();
