@@ -74,7 +74,7 @@ export async function getAllTasks() {
                 note: i.note
             });
         }
-        console.log(list);
+        // console.log(list);
         // await db.close();
         return list;
     }catch(err){
@@ -122,15 +122,17 @@ export async function getTaskByID(taskID) {
 
 export async function addTask(tasks)
 {
+    var db=null;
     var msg={};
+    if(!tasks.platform) platform="OJ";
     try{
-    const db = await connection();
-    const sql = 'INSERT INTO TaskList (taskName, taskURL, platform) VALUES (:val1, :val2, :val3)';
+    db = await connection();
+    const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL") VALUES (:val1, :val2, :val3)';
     const result = await db.execute(sql, 
     {
-        val1:tasks.taskName, 
-        val2:tasks.taskURL, 
-        val3:tasks.platform
+        val1:tasks.platform, 
+        val2:tasks.taskName, 
+        val3:tasks.taskURL
     });
     db.commit();
     console.log("Inserted data: \n" + result.rowsAffected);

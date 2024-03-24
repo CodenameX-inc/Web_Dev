@@ -3,7 +3,9 @@ const app = express();
 import tasksRoute from './routes/TasksRoute.js'
 
 app.use(express.json());
-
+app.use(cors({
+    origin: '*' // Adjust this to match your frontend's origin
+  }));
 app.get('/', (req, res) => {
     res.send("WELCOME TO TASKLIST FOR LEETCODE/CF/ATCODER/CODECRAFTERS/CODINGAME!!")
 })

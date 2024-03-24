@@ -24,7 +24,7 @@ router.get("/signup", async (req, res) => {
 });
 router.get('/get-task/:taskID', async (req, res) => {
   const uid = req.params.taskID;
-  const TaskList = getTaskByID(uid);
+  const TaskList = await getTaskByID(uid);
   if(TaskList){
     res.status(200).send(TaskList);
   }
@@ -36,7 +36,8 @@ router.get('/all-tasks', async (req, res) => {
   // res.sendFile(pages.coursesPage, {root: rootDir});
   // res.setHeader('Content-Type', 'text/html');
   const msg = { "error-message": "Error fetching tasks." }; // Default error message
-  let TaskList = getAllTasks();
+  let TaskList = await getAllTasks();
+  console.log(TaskList);
   // res.sendFile(pages.coursesPage, {root: rootDir});
   if(TaskList){
     res.status(200).send(TaskList);
@@ -51,11 +52,14 @@ function determinePlatform(tUrl) {
   const platform = parts[1] || parts[0]; // Use the second part if the first part is empty
   return platform; // Return the extracted platform
 }
-router.post('/add-tasks', async (req,res)=>
+router.post('/add-task', async (req,res)=>
 {
   const errMsg = {message: "error"};
   res.setHeader('Content-Type', 'application/json');
-  const { taskName, taskURL, platform } = req.body;
+    // var { taskName, taskURL, platform } = req.body;
+    var taskName = req.body.taskName;
+    var taskURL = req.body.taskURL;
+    var platform = req.body.platform;
   //TODO: implement function in Database to get Task name from Codeforces/OJ API
   if(!taskName || !taskURL) {
     errMsg["message"]="task name/url not added"
@@ -66,13 +70,13 @@ router.post('/add-tasks', async (req,res)=>
   }
   //DONE: implement function to determine which OJ is used to set platform
   const data ={
-    'taskName': taskName,
-    'taskURL': taskURL,
-    'platform': platform,
+    taskName: taskName,
+    taskURL: taskURL,
+    platform: platform,
   }
   
-  console.log("data inserted: \n"+data);
-  var msg = addTask(data); //send to DB to add data 
+  console.log("data inserted: \n"+data.platform);
+  var msg = await addTask(data); //send to DB to add data 
   
   if(Object.keys(msg)[0]==='error'){
     res.status(500).send(msg);
@@ -88,7 +92,7 @@ router.put('/update-task/:uid',async (req,res)=>{
   console.log(`Task ID: ${taskID}`);
   const {taskName, taskURL, status, note} = req.body;
   const platform = determinePlatform(taskURL);
-  var Task = updateTask(taskName, taskURL, platform, status, note, taskID); 
+  var Task = await updateTask(taskName, taskURL, platform, status, note, taskID); 
   if(Task){
     res.status(200).send(Task);
   }else{
@@ -99,7 +103,7 @@ router.put('/update-task/:uid',async (req,res)=>{
 
 router.delete('/delete-task/:taskID', async (req, res)=>{
   const taskID = req.params.taskID;
-  var msg = deleteTask(taskID);
+  var msg = await deleteTask(taskID);
   if(Object.keys(msg)[0]==='error'){
     res.status(500).send(msg);
   }else if(Object.keys(msg)[0]==='message'){
