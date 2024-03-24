@@ -1,14 +1,14 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import axios from 'axios'
-import Spinner from './components/Spinner'
+import Spinner from '../components/Spinner'
 import { Link } from 'react-router-dom'
 import {AiOutlineEdit} from 'react-icons/ai'
 import {BsInfoCircle} from 'react-icons/bs'
 import {MdOutlineAddBox, MdOutlineDelete} from 'react-icons/md';
-import { PORT } from '../../SERVER/config'
-import TaskTable from './components/home/TaskTable'
-import TaskModal from './components/home/TaskModal'
-import TaskCard from './components/home/TasksCard'
+import { PORT } from '../../config.js'
+import TaskTable from '../components/home/TaskTable'
+import TaskModal from '../components/home/TaskModal'
+import TaskCard from '../components/home/TaskCard.jsx'
 
 
 const Home = () => {

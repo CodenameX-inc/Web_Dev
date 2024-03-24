@@ -1,10 +1,10 @@
 import React from 'react'
 import {Routes, Route} from 'react-router-dom'
-import Home from './Home.jsx'
-import CreateTasks from './CreateTasks.jsx'
-import ShowTask from './ShowTask.jsx'
-import DeleteTask from './DeleteTask.jsx'
-import UpdateTask from './UpdateTask.jsx'
+import Home from './pages/Home.jsx'
+import CreateTasks from './pages/CreateTasks.jsx'
+import ShowTask from './pages/ShowTask.jsx'
+import DeleteTask from './pages/DeleteTask.jsx'
+import UpdateTask from './pages/UpdateTask.jsx'
 
 
 const App = () => {

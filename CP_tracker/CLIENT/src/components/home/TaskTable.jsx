@@ -21,7 +21,7 @@ const TaskTable = ({ tasks }) => {
         </tr>
       </thead>
       <tbody>
-        {tasks.map((task, index) => (
+        {tasks?.map((task, index) => (
           <tr key={task.uid} className='h-8'>
             <td className='border border-slate-700 rounded-md text-center'>
               {index + 1}

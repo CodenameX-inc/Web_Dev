@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import BackButton from './components/BackButton.jsx';
-import Spinner from './components/Spinner.jsx';
+import React, { useState, useEffect } from 'react';
+import BackButton from '../components/BackButton.jsx';
+import Spinner from '../components/Spinner.jsx';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {PORT} from '../config.js';
+import {PORT} from '../../config.js';
 
 const DeleteTask = () => {
   const [loading, setLoading] = useState(false);

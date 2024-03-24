@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import BackButton from './components/BackButton.jsx';
-import Spinner from './components/Spinner.jsx';
-import {PORT} from '../config.js';
+import BackButton from '../components/BackButton.jsx';
+import Spinner from '../components/Spinner.jsx';
+import {PORT} from '../../config.js';
 
 const ShowTask = () => {
   const [task, setTask] = useState({});

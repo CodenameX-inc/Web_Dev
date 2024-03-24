@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import BackButton from './components/BackButton.jsx';
-import Spinner from './components/Spinner.jsx';
+import React, { useState, useEffect } from 'react';
+import BackButton from '../components/BackButton.jsx';
+import Spinner from '../components/Spinner.jsx';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
-import {PORT} from '../config.js';
+import {PORT} from '../../config.js';
 
-const CreateBooks = () => {
+const CreateTasks = () => {
   const [taskName, setName] = useState('');
   const [taskURL, setURL] = useState('');
   // const [status, setStatus] = useState('');
@@ -46,7 +46,7 @@ const CreateBooks = () => {
           <label className='text-xl mr-4 text-gray-500'>Task Name</label>
           <input
             type='text'
-            value={title}
+            value={taskName}
             onChange={(e) => setName(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2 w-full'
           />
@@ -55,7 +55,7 @@ const CreateBooks = () => {
           <label className='text-xl mr-4 text-gray-500'>Task URL</label>
           <input
             type='text'
-            value={author}
+            value={taskURL}
             onChange={(e) => setURL(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2  w-full '
           />
@@ -77,4 +77,4 @@ const CreateBooks = () => {
   );
 }
 
-export default CreateBooks
+export default CreateTasks
