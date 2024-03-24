@@ -1,0 +1,20 @@
+.container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.course-info{
+    width: min-content
+}
+.box{
+    background-color: aqua;
+    width: 30%;
+    margin-bottom: 20px;
+}
+.course-logo{
+    justify-content: flex-start;
+}
+.course-text{
+    justify-content: center;
+}

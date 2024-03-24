@@ -37,11 +37,16 @@ let CN =
   "Data", "DSA", "Algorithms", "Database", "AI", "Machine", "NLP", "C++", "Java", "Python", "Machine-Learning", "ML", "Programming", "Software", "Computer", "CSE"
 ]
 
-
+app.get("/login", (req, res) => {
+  res.sendFile(pages.loginPageLink, {root: rootDir});
+});
+app.get("/signup", (req, res) => {
+  res.sendFile(pages.signupPageLink, {root: rootDir});
+});
 
 app.get('/courses/all-courses', (req, res) => {
-  res.sendFile(pages.coursesPage, {root: rootDir});
-  res.setHeader('Content-Type', 'application/json');
+  // res.sendFile(pages.coursesPage, {root: rootDir});
+  res.setHeader('Content-Type', 'text/html');
   const msg = { "error-message": "Error fetching courses." }; // Default error message
   if (!fs.existsSync(DB_PATH)) {
       fs.closeSync(fs.openSync(DB_PATH, 'w'));
@@ -50,22 +55,7 @@ app.get('/courses/all-courses', (req, res) => {
       res.status(500).json(msg);
   } else {
       createTable();
-      db.all('SELECT courseId, courseName, instructor FROM courses', (err, rows) => { // <-- Here's where err is being used
-          if (err) {
-              console.error('Error fetching courses:', err.message);
-              res.status(500).json(msg);
-          } else {
-              const courseList = rows;
-              console.log(courseList);
-              try{
-              res.status(200).render('courses', {courseList});
-              }catch (err) {
-                console.error('Error fetching course data:', err);
-                res.status(500).send('Internal Server Error');
-            }
-
-          }
-      });
+      res.sendFile(pages.coursesPage, {root: rootDir});
   }
 });
 

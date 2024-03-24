@@ -6,8 +6,8 @@
     <meta charset="utf-8" />
     <meta property="twitter:card" content="summary_large_image" />
     
+    <link rel="stylesheet" href="./stylesheets/navbar.css" />
     <link rel="stylesheet" href="./style.css" />
-    <link rel="stylesheet" href="./index.css" />
 
 
     <!-- FONTS BELOW: Inter, Montserrat -->
@@ -16,23 +16,24 @@
     
   </head>
   <body>
-    <div>
+    <script src="./client/client.js"></script>
+    <div id="navbar">
       <div class="navbar-container">
         <div class="navbar-navbar">
           <div class="navbar-container1">
             <div class="navbar-logo">
               <div class="navbar-valtflowicon">
-                <img id="logoImg" src="assets/logo.png" alt="logo">
+                <img id="logoImg" src="./assets/logo.png" alt="logo">
               </div>
               <span class="navbar-text"><span>WebStack essentials</span></span>
             </div>
             <div class="navbar-column">
               <div class="navbar-column1">
-                <span class="navbar-text02"><span>Home</span></span>
-                <span class="navbar-text04"><span>About</span></span>
-                <span class="navbar-text06"><span>Services</span></span>
+                <span class="navbar-text02"><span><a href="/courses/all-courses">Courses Dashboard</a></span></span>
+                <span class="navbar-text04"><span><a href="/About">About</a></span></span>
+                <span class="navbar-text06"><span><a href="/Services">Services</span></span>
                 <div class="navbar-nav-link-dropdown">
-                  <span class="navbar-text08"><span>Contact</span></span>
+                  <span class="navbar-text08"><span><a href="/Contact">Contact</a></span></span>
                   
                 </div>
               </div>
@@ -53,5 +54,12 @@
         </div>
       </div>
     </div>
+    
+    <div id>
+      <canvas id="bg">
+        
+      </canvas>
+    </div>
+    
   </body>
 </html>

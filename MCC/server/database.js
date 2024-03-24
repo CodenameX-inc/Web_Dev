@@ -3,6 +3,20 @@ import fs from 'fs';
 
 const DB_PATH = '../courses/courses.sqlite';
 export const db = connection();
+
+export function getAllCourses() {
+    db.all('SELECT courseId, courseName, instructor FROM courses', (err, rows) => { // <-- Here's where err is being used
+        if (err) {
+            console.error('Error fetching courses:', err.message);
+            return (msg);
+        } else {
+            const courseList = rows;
+            console.log(courseList); 
+            return (courseList);
+        }
+    });
+}
+
 export function createDB() {
     if (!fs.existsSync(DB_PATH)) {
         fs.closeSync(fs.openSync(DB_PATH, 'w'));
