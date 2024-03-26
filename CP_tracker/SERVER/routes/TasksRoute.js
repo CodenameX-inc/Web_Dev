@@ -8,28 +8,35 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 const router = express.Router();
+// const dotenv = require('dotenv');
+// dotenv.config();
 
-// createTable(); //create table if not exists
-router.get('/', async (req, res) => {
-  console.log(`got GET request : ${req.statusMessage}`);
-//   res.sendFile(pages.homePageLink, {root: rootDir});
-  res.send({ message: 'Welcome to the CP tracker API!' });
-});
+// const {OAuth2Client} = require('google-auth-library');
 
-router.get("/login", async (req, res) => {
-  // res.sendFile(pages.loginPageLink, {root: rootDir});
-});
-router.get("/signup", async (req, res) => {
-  // res.sendFile(pages.signupPageLink, {root: rootDir});
-});
+
+// router.post('/', async function (req, res, next) {
+//   res.header('Access-Control-Allow-Origin', 'http://localhost:5173');
+//   res.header('Referrer-Policy','no-referrer-when-downgrade');
+
+//   const redirectUrl = 'http://127.0.0.1/oauth';
+//   const oAuth2Client = new OAuth2Client()
+//   /* res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//   res.header('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   res.header('Content-Type', 'application/json');
+//   res.send({message: "Hello"});*/
+// //TODO: IMPLEMENT OTHER FUNCTIONALITIES, LIKE SHOWING HOMEPAEG 
+// });
+
 router.get('/get-task/:taskID', async (req, res) => {
   const uid = req.params.taskID;
   const TaskList = await getTaskByID(uid);
   if(TaskList){
+    console.log("Server received task: "+TaskList);
     res.status(200).send(TaskList);
   }
   else{
-    res.status(400).send({error:"Couldn't find task by ID: "+taskID});
+    res.status(400).send({error:"Couldn't find task by ID: "+uid});
   }
 });
 router.get('/all-tasks', async (req, res) => {
@@ -37,7 +44,7 @@ router.get('/all-tasks', async (req, res) => {
   // res.setHeader('Content-Type', 'text/html');
   const msg = { "error-message": "Error fetching tasks." }; // Default error message
   let TaskList = await getAllTasks();
-  console.log(TaskList);
+  // console.log(TaskList);
   // res.sendFile(pages.coursesPage, {root: rootDir});
   if(TaskList){
     res.status(200).send(TaskList);
@@ -46,11 +53,27 @@ router.get('/all-tasks', async (req, res) => {
     res.status(400).send({error:"Couldn't find any task!"});
   }
 });
-
 function determinePlatform(tUrl) {
-  const parts = tUrl.split('.')[0].split('//'); //split strings based on '.' and then split on '//'
-  const platform = parts[1] || parts[0]; // Use the second part if the first part is empty
-  return platform; // Return the extracted platform
+  var m = (tUrl || sp.targetUrl()).match(/^(([^:\/?#]+:)?(?:\/\/((?:([^\/?#:]*)(?::([^\/?#:]*))?@)?([^\/?#:]*)(?::([^\/?#:]*))?)))?([^?#]*)(\?[^#]*)?(#.*)?$/),
+    r = {
+        // hash: m[10] || "",                   // #asd
+        host: m[3] || "",                    // localhost:257
+        hostname: m[6] || "",                // localhost
+        // href: m[0] || "",                    // http://username:password@localhost:257/deploy/?asd=asd#asd
+        // origin: m[1] || "",                  // http://username:password@localhost:257
+        // pathname: m[8] || (m[1] ? "/" : ""), // /deploy/
+        // port: m[7] || "",                    // 257
+        protocol: m[2] || "",                // http:
+        // search: m[9] || "",                  // ?asd=asd
+        // username: m[4] || "",                // username
+        // password: m[5] || ""                 // password
+    };
+    if (r.protocol.length == 2) {
+        r.protocol = "file:///" + r.protocol.toUpperCase();
+        r.origin = r.protocol + "//" + r.host;
+    }
+    // r.href = r.origin + r.pathname + r.search + r.hash;
+    return r.hostname;
 }
 router.post('/add-task', async (req,res)=>
 {
@@ -90,20 +113,20 @@ router.put('/update-task/:uid',async (req,res)=>{
   res.setHeader('Content-Type', 'application/json');
   const taskID = req.params.uid;
   console.log(`Task ID: ${taskID}`);
-  const {taskName, taskURL, status, note} = req.body;
-  const platform = determinePlatform(taskURL);
-  var Task = await updateTask(taskName, taskURL, platform, status, note, taskID); 
+  const task = req.body;
+  const platform = determinePlatform(task.taskURL);
+  var Task = await updateTask(task.taskName, task.taskURL, platform, task.status, task.note, taskID); 
   if(Task){
-    res.status(200).send(Task);
+    res.status(200);
   }else{
     res.status(400);
   }
   
 });
 
-router.delete('/delete-task/:taskID', async (req, res)=>{
-  const taskID = req.params.taskID;
-  var msg = await deleteTask(taskID);
+router.delete('/delete-task/:uid', async (req, res)=>{
+  const uid = req.params.uid;
+  var msg = await deleteTask(uid);
   if(Object.keys(msg)[0]==='error'){
     res.status(500).send(msg);
   }else if(Object.keys(msg)[0]==='message'){

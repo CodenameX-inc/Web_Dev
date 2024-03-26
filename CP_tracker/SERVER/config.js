@@ -17,4 +17,13 @@ const dbConfig = {
     connectString: "localhost:1521/orclpdb"
 };
 
+export const authConfig = {
+    authRequired: false,
+    auth0Logout: true,
+    secret: 'a long, randomly-generated string stored in env',
+    baseURL: `http://localhost:${PORT}`,
+    clientID: 'kHSlR35gJpQPxoLqKXIzJ7UbqP2xsyXC',
+    issuerBaseURL: 'https://codename-x.us.auth0.com'
+  };
+
 export {express, dbConfig, cors, fs, bodyParser, PORT, tableName};

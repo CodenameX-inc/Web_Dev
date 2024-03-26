@@ -102,15 +102,16 @@ getAllTasks()
 export async function getTaskByID(taskID) {
     // createTable();   //create table if not exists
     const db = await connection();
-    const sql = 'SELECT * FROM TaskList WHERE uid = :val1'; 
+    const sql = 'SELECT * FROM TaskList WHERE "uid" = :val1'; 
     try{
         const result = await db.execute(sql, {val1: taskID});
         const TaskList = result.rows;
-        console.log("TaskList:\n"+TaskList);
-        // await db.close();
-        return TaskList;
+        const Task = result.rowsAffected;
+        console.log("the Task:\n"+(TaskList||Task));
+        await db.commit();
+        return TaskList||Task;
     }catch(err){
-        console.log("Error Inserting data: "+ err.message);
+        console.log("Error Getting data: "+ err.message);
         return null;
     } finally{
         if(db){
@@ -153,7 +154,7 @@ export async function addTask(tasks)
 }
 //Update tasks based on uid
 export async function updateTask(taskName, taskURL, platform, status, note, uid){
-    const query='UPDATE TaskList SET taskName = :val1, taskURL = :val2 , platform = :val3 , status = :val4 , note = :val5 WHERE uid= :val6 ';
+    const query='UPDATE TaskList SET "taskName" = :val1, "taskURL" = :val2 , "platform" = :val3 , "status" = :val4 , "note" = :val5 WHERE "uid"= :val6 ';
     // const any=[taskName,taskURL, platform, uid];
     var msg={};
     const db = await connection();
@@ -168,7 +169,7 @@ export async function updateTask(taskName, taskURL, platform, status, note, uid)
         });
         console.log("Updated task " + taskName + "And res:\n");
         console.log(res);
-        // await db.close();
+        await db.commit();
         return res.rowsAffected;
     }
     catch(e){
