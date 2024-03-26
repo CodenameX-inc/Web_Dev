@@ -14,14 +14,14 @@ import TaskCard from '../components/home/TaskCard.jsx'
 const Home = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(false);
-    const [showType, setShowType] = useState('table');
-  
+    const [showType, setShowType] = useState('card');
     useEffect(() => {
       setLoading(true);
       axios
         .get(`http://localhost:${PORT}/tasks/all-tasks`)
         .then((response) => {
-          setTasks(response.data.data);
+          console.log("FROM SERVER to CLIENT: "+ response);
+          setTasks(response.data);
           setLoading(false);
         })
         .catch((error) => {
@@ -48,7 +48,7 @@ const Home = () => {
         </div>
         <div className='flex justify-between items-center'>
           <h1 className='text-3xl my-8'>Add Problems/Tasks</h1>
-          <Link to='/tasks/create-task'>
+          <Link to='/tasks/update-task/:tasks.uid'>
             <MdOutlineAddBox className='text-sky-800 text-4xl' />
           </Link>
         </div>

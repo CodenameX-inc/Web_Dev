@@ -2,9 +2,13 @@ import { Link } from 'react-router-dom';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
+import TaskModal from './TaskModal';
+import { BiBookContent } from 'react-icons/bi';
 
 //TODO: DONE
 const TaskTable = ({ tasks }) => {
+  const [showModal, setShowModal] = useState(false);
+  
   return (
     <table className='w-full border-separate border-spacing-2'>
       <thead>
@@ -18,6 +22,7 @@ const TaskTable = ({ tasks }) => {
             Status
           </th>
           <th className='border border-slate-600 rounded-md'>Note</th>
+          <th className='border border-slate-600 rounded-md max-md:hidden'>Modification</th>
         </tr>
       </thead>
       <tbody>
@@ -33,10 +38,14 @@ const TaskTable = ({ tasks }) => {
               {task.taskURL}
             </td> */}
             <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-              {task.status}
+              {/* {task.status} */}
             </td>
             <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-              {task.Note}
+            <BiBookContent onClick={() => setShowModal(true)}>
+            {showModal && (
+              <TaskModal task={task} onClose={() => setShowModal(false)} />
+            )}
+            </BiBookContent>
             </td>
             <td className='border border-slate-700 rounded-md text-center'>
               <div className='flex justify-center gap-x-4'>

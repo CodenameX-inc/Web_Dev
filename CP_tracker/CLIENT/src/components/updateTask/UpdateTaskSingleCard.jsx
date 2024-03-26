@@ -5,12 +5,10 @@ import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 import { useState } from 'react';
-import TaskModal from './TaskModal';
 import UpdateTaskModal from './UpdateTaskModal';
 
-const TaskSingleCard = ({ task }) => {
+const UpdateTaskSingleCard = ({ task }) => {
   const [showModal, setShowModal] = useState(false);
-  const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   return (
     <div className='container border-2 border-gray-500 rounded-lg px-4 py-2 m-4 relative hover:shadow-xl'>
@@ -34,23 +32,18 @@ const TaskSingleCard = ({ task }) => {
         <Link to={`/tasks/${task.uid}`}>
           <BsInfoCircle className='text-2xl text-green-800 hover:text-black' />
         </Link>
-        {/* <Link to={`/tasks/update-task/${task.uid}`}> */}
-        <AiOutlineEdit className='text-2xl text-yellow-600 hover:text-black'
-          onClick={()=> setShowUpdateModal(true)}  
-        />
-        {/* </Link> */}
-        <Link to={`/tasks/delete-task/${task}`}>
+        <Link to={`/tasks/update-task/${task.uid}`}>
+          <AiOutlineEdit className='text-2xl text-yellow-600 hover:text-black' />
+        </Link>
+        <Link to={`/tasks/delete-task/${task.uid}`}>
           <MdOutlineDelete className='text-2xl text-red-600 hover:text-black' />
         </Link>
       </div>
       {showModal && (
         <TaskModal task={task} onClose={() => setShowModal(false)} />
       )}
-      {showUpdateModal && (
-        <UpdateTaskModal task={task} onClose={() => setShowUpdateModal(false)} />
-      )}
     </div>
   );
 };
 
-export default TaskSingleCard;
+export default UpdateTaskSingleCard;

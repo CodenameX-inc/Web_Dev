@@ -15,10 +15,11 @@ const UpdateTask = () => {
   const navigate = useNavigate();
   const {id} = useParams();
   const { enqueueSnackbar } = useSnackbar();
-
+/*
   useEffect(() => {
     setLoading(true);
-    axios.get(`http://localhost:${PORT}/tasks/update-task/${id}`)
+    
+    axios.get(`http://localhost:${PORT}/tasks/get-task/${id}`)
     .then((response) => {
         setURL(response.data.taskURL)
         setStatus(response.data.status)
@@ -31,6 +32,7 @@ const UpdateTask = () => {
         console.log(error);
       });
   }, [])
+  */
   
   const handleUpdateTask = () => {
     const data = {
@@ -45,7 +47,7 @@ const UpdateTask = () => {
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Task Edited successfully', { variant: 'success' });
-        navigate('/');
+        navigate('/tasks/all-tasks');
       })
       .catch((error) => {
         setLoading(false);

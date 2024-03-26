@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { BsArrowLeft } from 'react-icons/bs';
 
-const BackButton = ({ destination = '/' }) => {
+const BackButton = ({ destination = '/tasks/all-tasks' }) => {
   return (
     <div className='flex'>
       <Link
