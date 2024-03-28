@@ -152,9 +152,9 @@ export async function addTask(tasks)
         }
     }
 }
-export async function CreateUser({user}){
+export async function CreateUser(user){
     const db = await connection();
-    const sql = 'INSERT INTO USERS where "username" = :usr "email" = :em, "pass" = :ps'
+    const sql = 'INSERT INTO USERS ("fullname", "email", "password") VALUES ( :usr, :em, :ps )';
     try{
         const res = db.execute(sql, {
             usr: user.username,
@@ -162,12 +162,16 @@ export async function CreateUser({user}){
             ps: user.password
         });
         await db.commit();
-        console.log("User "+ user.username + " added successfully!");
+        console.log("User \n:", user);
         console.log("the res: "+ res);
+        console.log('Signup successful');
         return (await res).rowsAffected;
     }
     catch(err){
-        console.log("Error happened while registering the user. error:\n"+err.message);
+        
+        console.log('Signup failed');
+        console.log("Error happened while registering the user, error:\n"+err.message);
+        return null;
     }
     finally{
         if(db){
@@ -176,6 +180,44 @@ export async function CreateUser({user}){
         }
     }
 }
+
+export async function LoginUser(user) {
+    const db = await connection();
+    const sql = `SELECT * FROM USERS WHERE "email" = :val1`;
+    try {
+        const res = await db.execute(sql, {
+            val1: user.email
+        });
+        await db.close();
+
+        if (res.rows.length === 0) {
+            console.log("User not found");
+            return null;
+        }
+
+        const retrievedUser = res.rows[0];
+        console.log("USER FOUND:", retrievedUser.userID, retrievedUser.email, retrievedUser.password);
+        
+        // Now you have access to the password retrieved from the database
+        const retrievedPassword = retrievedUser.password;
+
+        // You can return the retrieved user data or use it as needed
+        return retrievedUser;
+    } catch (e) {
+        console.log("Error:", e.message);
+        return null;
+    } finally {
+        if (db) {
+            try {
+                await db.close();
+            } catch (e) {
+                console.log("Error: " + e.message);
+            }
+        }
+    }
+}
+
+
 //Update tasks based on uid
 export async function updateTask(taskName, taskURL, platform, status, note, uid){
     const query='UPDATE TaskList SET "taskName" = :val1, "taskURL" = :val2 , "platform" = :val3 , "status" = :val4 , "note" = :val5 WHERE "uid"= :val6 ';

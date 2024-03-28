@@ -112,11 +112,11 @@ router.post('/add-task', async (req,res)=>
 router.put('/update-task/:uid',async (req,res)=>{
   res.setHeader('Content-Type', 'application/json');
   const taskID = req.params.uid;
-  console.log(`Task ID: ${taskID}`);
   const task = req.body;
+  console.log(`Task ID: ${task.uid}`);
   console.log(task);
   const platform = determinePlatform(task.taskURL);
-  var Task = await updateTask(task.taskName, task.taskURL, platform, task.status, task.note, taskID); 
+  var Task = await updateTask(task.taskName, task.taskURL, platform, task.status, task.note, task.uid); 
   if(Task){
     res.status(200);
   }else{
