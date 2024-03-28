@@ -152,6 +152,30 @@ export async function addTask(tasks)
         }
     }
 }
+export async function CreateUser({user}){
+    const db = await connection();
+    const sql = 'INSERT INTO USERS where "username" = :usr "email" = :em, "pass" = :ps'
+    try{
+        const res = db.execute(sql, {
+            usr: user.username,
+            em: user.email,
+            ps: user.password
+        });
+        await db.commit();
+        console.log("User "+ user.username + " added successfully!");
+        console.log("the res: "+ res);
+        return (await res).rowsAffected;
+    }
+    catch(err){
+        console.log("Error happened while registering the user. error:\n"+err.message);
+    }
+    finally{
+        if(db){
+            try{await db.close();}
+            catch(e){console.log("Error: "+e.message);}
+        }
+    }
+}
 //Update tasks based on uid
 export async function updateTask(taskName, taskURL, platform, status, note, uid){
     const query='UPDATE TaskList SET "taskName" = :val1, "taskURL" = :val2 , "platform" = :val3 , "status" = :val4 , "note" = :val5 WHERE "uid"= :val6 ';

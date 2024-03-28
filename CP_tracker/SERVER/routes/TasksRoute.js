@@ -1,5 +1,5 @@
 import {express, cors, bodyParser, PORT} from '../config.js';
-
+import bcrypt from 'bcrypt';
 import { addTask, updateTask, getAllTasks, deleteTask, getTaskByID} from '../database/database.js';
 const app = express();
 // Use bodyParser middleware to parse JSON and URL-encoded request bodies
@@ -54,26 +54,26 @@ router.get('/all-tasks', async (req, res) => {
   }
 });
 function determinePlatform(tUrl) {
-  var m = (tUrl || sp.targetUrl()).match(/^(([^:\/?#]+:)?(?:\/\/((?:([^\/?#:]*)(?::([^\/?#:]*))?@)?([^\/?#:]*)(?::([^\/?#:]*))?)))?([^?#]*)(\?[^#]*)?(#.*)?$/),
-    r = {
-        // hash: m[10] || "",                   // #asd
-        host: m[3] || "",                    // localhost:257
-        hostname: m[6] || "",                // localhost
-        // href: m[0] || "",                    // http://username:password@localhost:257/deploy/?asd=asd#asd
-        // origin: m[1] || "",                  // http://username:password@localhost:257
-        // pathname: m[8] || (m[1] ? "/" : ""), // /deploy/
-        // port: m[7] || "",                    // 257
-        protocol: m[2] || "",                // http:
-        // search: m[9] || "",                  // ?asd=asd
-        // username: m[4] || "",                // username
-        // password: m[5] || ""                 // password
-    };
-    if (r.protocol.length == 2) {
-        r.protocol = "file:///" + r.protocol.toUpperCase();
-        r.origin = r.protocol + "//" + r.host;
-    }
-    // r.href = r.origin + r.pathname + r.search + r.hash;
-    return r.hostname;
+  // var m = (tUrl || sp.targetUrl()).match(/^(([^:\/?#]+:)?(?:\/\/((?:([^\/?#:]*)(?::([^\/?#:]*))?@)?([^\/?#:]*)(?::([^\/?#:]*))?)))?([^?#]*)(\?[^#]*)?(#.*)?$/),
+  //   r = {
+  //       // hash: m[10] || "",                   // #asd
+  //       host: m[3] || "",                    // localhost:257
+  //       hostname: m[6] || "",                // localhost
+  //       // href: m[0] || "",                    // http://username:password@localhost:257/deploy/?asd=asd#asd
+  //       // origin: m[1] || "",                  // http://username:password@localhost:257
+  //       // pathname: m[8] || (m[1] ? "/" : ""), // /deploy/
+  //       // port: m[7] || "",                    // 257
+  //       protocol: m[2] || "",                // http:
+  //       // search: m[9] || "",                  // ?asd=asd
+  //       // username: m[4] || "",                // username
+  //       // password: m[5] || ""                 // password
+  //   };
+  //   if (r.protocol.length == 2) {
+  //       r.protocol = "file:///" + r.protocol.toUpperCase();
+  //       r.origin = r.protocol + "//" + r.host;
+  //   }
+  //   // r.href = r.origin + r.pathname + r.search + r.hash;
+    return "OJ";
 }
 router.post('/add-task', async (req,res)=>
 {
@@ -114,6 +114,7 @@ router.put('/update-task/:uid',async (req,res)=>{
   const taskID = req.params.uid;
   console.log(`Task ID: ${taskID}`);
   const task = req.body;
+  console.log(task);
   const platform = determinePlatform(task.taskURL);
   var Task = await updateTask(task.taskName, task.taskURL, platform, task.status, task.note, taskID); 
   if(Task){
