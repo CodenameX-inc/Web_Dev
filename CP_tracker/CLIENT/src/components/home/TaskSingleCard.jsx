@@ -1,10 +1,11 @@
+
 import { Link } from 'react-router-dom';
 import { PiBookOpenTextLight } from 'react-icons/pi';
 import { BiUserCircle, BiShow } from 'react-icons/bi';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
-import { useState } from 'react';
+import React, { useState } from 'react';
 import TaskModal from './TaskModal';
 import UpdateTaskModal from './UpdateTaskModal';
 
@@ -36,7 +37,7 @@ const TaskSingleCard = ({ task }) => {
         </Link>
         {/* <Link to={`/tasks/update-task/${task.uid}`}> */}
         <AiOutlineEdit className='text-2xl text-yellow-600 hover:text-black'
-          onClick={()=> setShowUpdateModal(true)}  
+          onClick={()=> setShowUpdateModal(true, task.uid)}  
         />
         {/* </Link> */}
         <Link to={`/tasks/delete-task/${task}`}>

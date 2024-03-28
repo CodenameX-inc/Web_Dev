@@ -96,7 +96,7 @@ const UpdateTask = () => {
             type='text'
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2  w-full '
+            className='border-8 border-gray-500 px-4 py-2  w-full '
           />
         </div>
         <button className='p-2 bg-sky-300 m-8' onClick={handleUpdateTask}>

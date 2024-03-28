@@ -1,23 +1,24 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import Spinner from '../components/Spinner';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import {AiOutlineEdit} from 'react-icons/ai';
-import {BsInfoCircle} from 'react-icons/bs';
+import Spinner from "../components/Spinner";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { AiOutlineEdit } from "react-icons/ai";
+import { BsInfoCircle } from "react-icons/bs";
+import * as conf from "../../config.js";
 // import {Login, Signup, Home} from './App.jsx';
-import {MdOutlineAddBox, MdOutlineDelete} from 'react-icons/md';
+import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 
 import { PORT } from "../../config";
 
 const index = () => {
-    const [loading, setLoading] = useState('');
-    const navigate = useNavigate();
+  const [loading, setLoading] = useState("");
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        setLoading(true);
-        axios.get(`http://localhost:${PORT}/`);
-    }, []);
+  useEffect(() => {
+    setLoading(true);
+    axios.get(`http://localhost:${PORT}/`);
+  }, []);
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -82,45 +83,92 @@ const index = () => {
                 Solve problems. Sharpen skills.
               </h1>
               <div className="flex items-center justify-center">
-                <p className="max-w-[700px] text-gray-500 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-500">
-                Practice coding problems, track your progress, and compete with
-                friends.
-              </p>
+                <p className="max-w-[700px] text-gray-500 mx-10 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-500">
+                  Practice coding problems, track your progress, and compete
+                  with friends.
+                </p>
               </div>
-              
             </div>
-            <div className="flex items-center justify-center">
+          </div>
+
+          <div className="flex items-center justify-center mt-5">
             <img
               alt="Main image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="450"
-              src="https://mist.ac.bd/storage/photos/cse/Front%20Page%20Pics/labs.jpg"
+              src={conf.ind_intro}
               width="800"
             />
+          </div>
+          <div className="flex items-center justify-center">
+            <div className="mockup-code m-10 text-left" >
+              <p className="bg-gray-700 text-gray-500 max-md:hidden"># Expectation:</p>
+              <pre data-prefix="$">
+                <code>brain install problem-solving</code>
+              </pre>
+              <pre data-prefix=">" className="text-warning">
+                <code>installing...</code>
+              </pre>
+              <pre data-prefix=">" className="text-success">
+                <code>Done!</code>
+              </pre>
+            </div>
+
+            <div className="mockup-code m-10 text-left max-md:hidden">
+              <p className="bg-gray-700 text-gray-500"># Reality:</p>
+              <pre data-prefix="$">
+                <code>brain install problem-solving</code>
+              </pre>
+              <pre data-prefix=">" className="text-error">
+                <code>Error: brain feeels tired, practice more</code>
+              </pre>
+              <pre data-prefix="$" className="text-warning">
+                <code>sudo su</code>
+              </pre>
+              <pre data-prefix=">" className="text-blue-300">
+                <code>for i in {"1..10000"}; do</code>
+                <pre data-prefix=">" className="text-cyan-400">
+                  <code>  practice_{"$i"}.sh</code>
+                </pre>
+                <pre data-prefix=">" className="text-blue-300">
+                  <code>done</code>{" "}
+                </pre>
+              </pre>
+              <pre data-prefix=">" className="text-success">
+                <code>brain: problem-solving unlocked! installing..</code>
+              </pre>
             </div>
           </div>
-          <div className="mt-6 space-y-4">
+
+          <div className="mt-6 space-y-4 m-2">
             <Link
-              className="bg-white text- px-8 py-2 rounded-md border border-gray-200 shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:ring-gray-300"
+              // className="bg-white text- px-8 py-2 rounded-md border border-gray-200 shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus:ring-gray-300"
+              className="m-8 mt-8"
               to="/signup"
             >
-              Create an Account
+              <button className="btn glass btn-info w-[300px] mt-8 min-w-96 bg-blue-500 text-black">
+                Create an Account
+              </button>
             </Link>
             <Link
-            className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-            href="/signup"
+              // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+              className="m-8"
+              to="/login"
             >
-              Tour the Platform
+              <button className="btn glass w-[300px] mt-8 min-w-96 bg-cyan-300 text-black btn-success">
+                Login & practice
+              </button>
             </Link>
           </div>
         </section>
         <section className="bg-gray-100 py-12 lg:py-16 dark:bg-gray-800">
           <div className="container grid items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:grid-cols-[1fr_600px] xl:grid-cols-[1fr_700px]">
+            {/* TODO: drop a picture Arik's team here */}
             <img
               alt="Image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="340"
-              src="https://scontent.fdac138-2.fna.fbcdn.net/v/t39.30808-6/337850788_2159336244267141_5703344120419083987_n.jpg?stp=cp6_dst-jpg&_nc_cat=106&ccb=1-7&_nc_sid=5f2048&_nc_ohc=7hYmrWbGTssAX9TL6Og&_nc_ht=scontent.fdac138-2.fna&oh=00_AfDv_NT1XiPeOaG0aJxGmHMA4ws-yHBYOv8k-zfSzGuuCg&oe=660598EE"
+              src={conf.ind_CPKoro}
               width="600"
             />
             <div className="flex flex-col justify-center space-y-4">
@@ -129,17 +177,21 @@ const index = () => {
                   Practice coding problems
                 </h2>
                 <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
-                  "ABEH! CP karle, wasehi job market me waat lagi hein, aur dusri tara AI bhi Aa gaya.. CP karega to aage badhne ka chance milega"
+                  "ABEH! CP karle, wasehi job market me waat lagi hein, aur
+                  dusri tara AI bhi Aa gaya.. CP karega to aage badhne ka chance
+                  milega"
                 </p>
                 <p className="max-w-[400px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
-                    - (probably) someone among these genius trio
+                  - (probably) someone among these genius trio
                 </p>
               </div>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                // className="inline-flex h-10 items-center justify-center rounded-md borderfont-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50"
                 to="/tasks/all-tasks"
               >
-                Start Practicing
+                <button className="btn glass btn-success w-[400px] min-w-96">
+                  Start Practicing
+                </button>
               </Link>
             </div>
           </div>
@@ -159,17 +211,19 @@ const index = () => {
                 </p>
               </div>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                 to="tasks/all-tasks"
               >
-                View Tasks
+                <button className="btn glass btn-error h-10 min-w-96 w-[400px]">
+                  View Tasks
+                </button>
               </Link>
             </div>
             <img
               alt="Image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="340"
-              src="https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/431625717_762554969303544_3371984695160884386_n.jpg?stp=cp6_dst-jpg&_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=-loa8ZjZpjIAX9_Syv-&_nc_ht=scontent.fdac138-1.fna&oh=00_AfA0Ookyzi0t6SvOBDRp3uUBGftkQX8gxN3xLKNdRcn4tA&oe=6605EAC2"
+              src={conf.ind_TODO}
               width="600"
             />
           </div>
@@ -180,7 +234,7 @@ const index = () => {
               alt="Image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="340"
-              src="https://scontent.fdac138-2.fna.fbcdn.net/v/t39.30808-6/355108226_617141880511521_1397543077072907474_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=5f2048&_nc_ohc=LmnIilROJ2kAX-PcOG2&_nc_ht=scontent.fdac138-2.fna&oh=00_AfDMGIR72DhbS1FUZzEH619B2y9Muv5_IJ9hsgAavrKHTw&oe=6605B23C"
+              src={conf.ind_friends}
               width="600"
             />
             <div className="flex flex-col justify-center space-y-4">
@@ -195,10 +249,12 @@ const index = () => {
                 </p>
               </div>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                 to="/tasks/leaderboard"
               >
-                Join the Competition
+                <button className="btn glass btn-info w-[400px]">
+                  Join the Competition
+                </button>
               </Link>
             </div>
           </div>
@@ -209,7 +265,7 @@ const index = () => {
               alt="Image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="340"
-              src="https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/415039858_723123913246650_7338065053124469650_n.jpg?stp=dst-jpg_p843x403&_nc_cat=109&ccb=1-7&_nc_sid=5f2048&_nc_ohc=NkKBZCCXNqQAX8kLuRR&_nc_ht=scontent.fdac138-1.fna&oh=00_AfDNY-RYcI-Q6ggGk-OpcXCclsms2w0-SO1q4YUA953eGA&oe=6606A5B1"
+              src={conf.ind_learn}
               width="600"
             />
             <div className="flex flex-col justify-center space-y-4">
@@ -225,10 +281,12 @@ const index = () => {
                 </p>
               </div>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                 href="#"
               >
-                Explore Resources
+                <button className="btn glass btn-primary w-400px min-w-96">
+                  Explore Resources
+                </button>
               </Link>
             </div>
           </div>
@@ -247,19 +305,48 @@ const index = () => {
                 </p>
               </div>
               <Link
-                className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
+                // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
                 href="#"
               >
-                Join the Community
+                <button className="btn glass btn-accent w-[300px] min-w-96">
+                  Join the Community
+                </button>
               </Link>
             </div>
             <img
               alt="Image"
               className="aspect-video overflow-hidden rounded-xl object-cover object-center"
               height="340"
-              src="https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/400358246_694299476129094_5764177843900813093_n.jpg?stp=dst-jpg_p960x960&_nc_cat=107&ccb=1-7&_nc_sid=5f2048&_nc_ohc=MgyG92Iyj3IAX8O0r70&_nc_ht=scontent.fdac138-1.fna&oh=00_AfDYKtXOr6cE44TIrXylNTX_XOdO6TpWtmoJx3j9AqfQDg&oe=66068756"
+              src={conf.ind_comm}
               width="600"
             />
+          </div>
+          <div className="grid grid-flow-col gap-5 text-center auto-cols-max">
+            <label className="ml-5">Next ICPC in: </label>
+            <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+              <span className="countdown font-mono text-5xl">
+                <span style={{ "--value": 15 }}></span>
+              </span>
+              days
+            </div>
+            <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+              <span className="countdown font-mono text-5xl">
+                <span style={{ "--value": 10 }}></span>
+              </span>
+              hours
+            </div>
+            <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+              <span className="countdown font-mono text-5xl">
+                <span style={{ "--value": 24 }}></span>
+              </span>
+              min
+            </div>
+            <div className="flex flex-col p-2 bg-neutral rounded-box text-neutral-content">
+              <span className="countdown font-mono text-5xl">
+                <span style={{ "--value": 47 }}></span>
+              </span>
+              sec
+            </div>
           </div>
         </section>
       </main>
@@ -273,7 +360,10 @@ const index = () => {
             <span>sharpen</span>
           </Link>
           <nav className="flex items-center justify-center space-x-4 text-gray-500 md:justify-end md:text-right lg:order-3 lg:space-x-2 lg:text-gray-400">
-            <Link className="font-medium underline" href="mailto:iftekharulislam1594@gmail.com">
+            <Link
+              className="font-medium underline"
+              href="mailto:iftekharulislam1594@gmail.com"
+            >
               Contact
             </Link>
             <Link className="font-medium underline" href="#">

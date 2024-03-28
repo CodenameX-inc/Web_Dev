@@ -85,8 +85,8 @@ function FlagIcon(props) {
             </div>
           </div>
           <div className="flex w-full max-w-sm flex-col gap-2 min-[400px]:flex-row">
-            <Input className="max-w-xs w-full" placeholder="Enter your email" type="email" />
-            <Button size="lg">Sign Up</Button>
+            <input className="max-w-xs w-full" placeholder="Enter your email" type="email" />
+            <button size="lg">Sign Up</button>
           </div>
         </div>
       </div>

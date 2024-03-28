@@ -47,8 +47,9 @@ const CreateTasks = () => {
           <input
             type='text'
             value={taskName}
+            placeholder={taskName}
             onChange={(e) => setName(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2 w-full'
+            className='grow border-2 border-gray-500 px-4 py-2 w-full'
           />
         </div>
         <div className='my-4'>
@@ -56,8 +57,9 @@ const CreateTasks = () => {
           <input
             type='text'
             value={taskURL}
+            placeholder={taskURL}
             onChange={(e) => setURL(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2  w-full '
+            className='grow border-2 border-gray-500 px-4 py-2  w-full '
           />
         </div>
         {/* <div className='my-4'>
@@ -69,7 +71,7 @@ const CreateTasks = () => {
             className='border-2 border-gray-500 px-4 py-2  w-full '
           />
         </div> */}
-        <button className='p-2 bg-sky-300 m-8' onClick={handleSaveTask}>
+        <button className='btn glass' onClick={handleSaveTask}>
           ADD
         </button>
       </div>

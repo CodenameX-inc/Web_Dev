@@ -34,21 +34,27 @@ const Home = () => {
       <div className='p-4'>
         <div className='flex justify-center items-center gap-x-4'>
           <button
-            className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+            className='btn glass btn-primary bg-blue-500'
             onClick={() => setShowType('table')}
           >
             Table
           </button>
           <button
-            className='bg-sky-300 hover:bg-sky-600 px-4 py-1 rounded-lg'
+            className='btn glass btn-success bg-cyan-400'
             onClick={() => setShowType('card')}
           >
             Card
           </button>
+          <Link to={`/`}>
+          <button
+            className='btn glass btn-accent'
+          >
+            Home
+          </button></Link>
         </div>
         <div className='flex justify-between items-center'>
           <h1 className='text-3xl my-8'>Add Problems/Tasks</h1>
-          <Link to='/tasks/update-task/:tasks.uid'>
+          <Link to={`/tasks/create-task`}>
             <MdOutlineAddBox className='text-sky-800 text-4xl' />
           </Link>
         </div>

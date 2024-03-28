@@ -4,7 +4,56 @@
 
 
 
+.user-profile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f4f4f4;
+  background-image: linear-gradient(to bottom right, #f4f4f4, #eaeaea);
+  font-family: "Helvetica Neue", Arial, sans-serif;
+}
 
+.card {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  padding: 40px;
+  text-align: center;
+  width: 80%;
+  max-width: 500px;
+  margin: 20px;
+}
+
+.profile-pic {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  border: 3px solid #eaeaea;
+}
+
+.name {
+  color: #333;
+  margin: 10px 0;
+  font-size: 32px;
+  font-weight: 600;
+}
+
+.email {
+  color: #666;
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.locale {
+  color: #666;
+  font-size: 14px;
+  margin-top: 25px;
+  letter-spacing: 1px;
+  font-family: monospace;
+}
 
 /* :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
