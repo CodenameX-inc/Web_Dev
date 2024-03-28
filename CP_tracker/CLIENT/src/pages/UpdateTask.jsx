@@ -6,16 +6,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { PORT } from '../../config.js';
 
-const UpdateTask = () => {
-  const [taskName, setName] = useState('');
-  const [taskURL, setURL] = useState('');
-  const [status, setStatus] = useState('');
-  const [note, setNote] = useState('');
-  const [loading, setLoading] = useState(false);
+const UpdateTask = ({task}) => {
+  const {id} = task.uid;
+  var [taskName, setName] = useState('');
+  var [taskURL, setURL] = useState('');
+  var [status, setStatus] = useState('');
+  var [note, setNote] = useState('');
+  var [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {id} = useParams();
   const { enqueueSnackbar } = useSnackbar();
-/*
+
   useEffect(() => {
     setLoading(true);
     
@@ -32,10 +32,11 @@ const UpdateTask = () => {
         console.log(error);
       });
   }, [])
-  */
+  
   
   const handleUpdateTask = () => {
     const data = {
+      uid:task.uid,
       taskName:taskName,
       taskURL:taskURL,
       status:status,
@@ -67,6 +68,7 @@ const UpdateTask = () => {
           <label className='text-xl mr-4 text-gray-500'>Task Name</label>
           <input
             type='text'
+            placeholder={task.taskName}
             value={taskName}
             onChange={(e) => setName(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2 w-full'
@@ -76,24 +78,36 @@ const UpdateTask = () => {
           <label className='text-xl mr-4 text-gray-500'>Task URL</label>
           <input
             type='text'
+            placeholder={task.taskURL}
             value={taskURL}
             onChange={(e) => setURL(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2  w-full '
           />
         </div>
         <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Status</label>
-          <input
-            type='text'
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Set Status</span>
+          </div>
+          <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2  w-full '
-          />
+            placeholder={task.status}
+            className='select select-info w-full max-w-xs '
+          >
+          <option disabled defaultValue>Set Status</option>
+          <option value='Pending'>Pending</option>
+          <option value='Attempted'>Attempted</option>
+          <option value='Solved/Done'>Solved/Done</option>
+          <option value='Revisit'>Revisit</option>
+          </select>
+        </label>
         </div>
         <div className='my-4'>
           <label className='text-xl mr-4 text-gray-500'>Note</label>
           <input
             type='text'
+            placeholder={task.note}
             value={note}
             onChange={(e) => setNote(e.target.value)}
             className='border-8 border-gray-500 px-4 py-2  w-full '

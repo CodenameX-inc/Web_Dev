@@ -12,17 +12,18 @@ import { PORT } from '../../../config.js';
 
 const UpdateTaskModal = ({ task, onClose, uid }) => {
 
-  const [taskName, setName] = useState('');
-  const [taskURL, setURL] = useState('');
-  const [status, setStatus] = useState('');
-  const [note, setNote] = useState('');
-  const [loading, setLoading] = useState(false);
+  var [taskName, setName] = useState('');
+  var [taskURL, setURL] = useState('');
+  var [status, setStatus] = useState('');
+  var [note, setNote] = useState('');
+  var [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const {id} = useParams(uid);
+  const {id} = task.uid;
   const { enqueueSnackbar } = useSnackbar();
 
   const handleUpdateTask = () => {
     const data = {
+      uid: task.uid,
       taskName: taskName,
       taskURL: taskURL,
       status: status,
@@ -63,11 +64,11 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
           Save
         </button>
         <div className='pl-20 '><p >If facing error:</p>
-        <Link to={`/tasks/update-task/${id}`}>
-        <button className='btn glass btn-accent bg-green-200 ml-auto'>
-          Enter Update menu
-        </button>
-        </Link>
+          <Link to={{
+              pathname: `/tasks/update-task/${task.uid}`,
+              state: { task: task }}}>
+              <AiOutlineEdit className='text-2xl text-yellow-600' />
+          </Link>
         </div>
         
         </div>
@@ -106,7 +107,7 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
             onChange={(e) => setStatus(e.target.value)}
             className='select select-info w-full max-w-xs '
           >
-          <option disabled selected>Set Status</option>
+          <option disabled defaultValue>Set Status</option>
           <option value='Pending'>Pending</option>
           <option value='Attempted'>Attempted</option>
           <option value='Solved/Done'>Solved/Done</option>

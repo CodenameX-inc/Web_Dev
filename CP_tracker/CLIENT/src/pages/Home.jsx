@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import Spinner from '../components/Spinner'
+import LTA from '../components/UI/LoadingTasksAnimation.jsx'
 import { Link } from 'react-router-dom'
 import {AiOutlineEdit} from 'react-icons/ai'
 import {BsInfoCircle} from 'react-icons/bs'
@@ -9,6 +10,7 @@ import { PORT } from '../../config.js'
 import TaskTable from '../components/home/TaskTable'
 import TaskModal from '../components/home/TaskModal'
 import TaskCard from '../components/home/TaskCard.jsx'
+import { BiSolidHome } from 'react-icons/bi'
 
 
 const Home = () => {
@@ -32,6 +34,14 @@ const Home = () => {
   
     return (
       <div className='p-4'>
+        <div className='flex items-start '>
+        <Link to={`/`}>
+          <button
+            className='btn glass bg-info text-white'
+          >
+            <BiSolidHome/>
+          </button></Link>
+        </div>
         <div className='flex justify-center items-center gap-x-4'>
           <button
             className='btn glass btn-primary bg-blue-500'
@@ -45,12 +55,7 @@ const Home = () => {
           >
             Card
           </button>
-          <Link to={`/`}>
-          <button
-            className='btn glass btn-accent'
-          >
-            Home
-          </button></Link>
+          
         </div>
         <div className='flex justify-between items-center'>
           <h1 className='text-3xl my-8'>Add Problems/Tasks</h1>
@@ -59,7 +64,8 @@ const Home = () => {
           </Link>
         </div>
         {loading ? (
-          <Spinner />
+          // <Spinner />
+          <LTA/>
         ) : showType === 'table' ? (
           <TaskTable tasks={tasks} />
         ) : (

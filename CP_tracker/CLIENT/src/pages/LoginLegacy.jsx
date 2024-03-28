@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Spinner.jsx";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
@@ -9,7 +9,7 @@ import * as conf from "../../config.js";
 // import {Login, Signup, Home} from './App.jsx';
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 
-import { PORT } from "../../config";
+import { PORT } from "../../config.js";
 const LoginPage = () => {
   return (
     <div className="flex h-screen bg-[#6c63ff]">

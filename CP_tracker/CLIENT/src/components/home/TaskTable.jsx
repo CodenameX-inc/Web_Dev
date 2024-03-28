@@ -5,25 +5,27 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import TaskModal from './TaskModal';
 import { BiBookContent } from 'react-icons/bi';
+import getStatusColor from '../UI/CustomStatusColor';
 
 //TODO: DONE
 const TaskTable = ({ tasks }) => {
-  const [showModal, setShowModal] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
   
   return (
+    <div>
     <table className='w-full border-separate border-spacing-2'>
       <thead>
         <tr>
           <th className='border border-slate-600 rounded-md'>No</th>
-          <th className='border border-slate-600 rounded-md'>Task Name</th>
-          {/* <th className='border border-slate-600 rounded-md max-md:hidden'>
+          <th className='border border-red-200 rounded-md'>Task Name</th>
+          <th className='border border-blue-700 rounded-md max-md:hidden'>
             Task Link
-          </th> */}
-          <th className='border border-slate-600 rounded-md max-md:hidden'>
+          </th>
+          <th className='border border-yellow-400 rounded-md max-md:hidden'>
             Status
           </th>
-          <th className='border border-slate-600 rounded-md'>Note</th>
-          <th className='border border-slate-600 rounded-md max-md:hidden'>Modification</th>
+          <th className='border rounded-md bg-gradient-to-br'>Note</th>
+          <th className='border border-yellow-600 rounded-md max-md:hidden'>Modification</th>
         </tr>
       </thead>
       <tbody>
@@ -32,39 +34,55 @@ const TaskTable = ({ tasks }) => {
             <td className='border border-slate-700 rounded-md text-center'>
               {index + 1}
             </td>
-            <td className='border border-slate-700 rounded-md text-center'>
+            <td className='border border-slate-700 rounded-md text-center underline'>
               <a href={task.taskURL}>{task.taskName}</a>
             </td>
-            {/* <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-              {task.taskURL}
-            </td> */}
-            <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-              {/* {task.status} */}
+            <td className='border border-slate-700 rounded-md text-center max-md:hidden w-fit'>
+            <a href={task.taskURL}>{task.taskURL}</a>
             </td>
-            <td className='border border-slate-700 rounded-md text-center max-md:hidden'>
-            <BiBookContent onClick={() => setShowModal(true)}>
-            {showModal && (
-              <TaskModal task={task} onClose={() => setShowModal(false)} />
-            )}
+            <td className={`border ${getStatusColor(task.status)} rounded-md text-center max-md:hidden`}>
+              {task.status}
+            </td>
+            <td className='border border-cyan-400 rounded-md text-center max-md:hidden content-center'>
+            <BiBookContent onClick={() => setSelectedTask(task.uid)}>
+              {
+              //the function is set at the end of the table
+              }
             </BiBookContent>
+                
             </td>
             <td className='border border-slate-700 rounded-md text-center'>
               <div className='flex justify-center gap-x-4'>
                 <Link to={`/tasks/get-task/${task.uid}`}>
                   <BsInfoCircle className='text-2xl text-green-800' />
                 </Link>
-                <Link to={`/tasks/add-task/${task.uid}`}>
+                <Link to={{
+                  pathname: `/tasks/update-task/${task.uid}`,
+                  state: { task: task }
+                }}>
                   <AiOutlineEdit className='text-2xl text-yellow-600' />
                 </Link>
                 <Link to={`/tasks/delete-task/${task.uid}`}>
                   <MdOutlineDelete className='text-2xl text-red-600' />
                 </Link>
+
+                
               </div>
             </td>
           </tr>
+          
         ))}
       </tbody>
     </table>
+    {/* Call the TaskModal based on the uid */}
+    {selectedTask && (
+        <TaskModal 
+          task={tasks.find(task => task.uid === selectedTask)} 
+          onClose={() => setSelectedTask(null)} 
+        />
+      )}
+    
+    </div>
   );
 };
 

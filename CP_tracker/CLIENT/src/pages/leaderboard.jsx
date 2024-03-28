@@ -2,53 +2,20 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 // import { Button } from ""
 import {Link} from "react-router-dom"
+import { BiSolidHome } from 'react-icons/bi'
 
 const Leaderboard = ()=> {
-  
-function CalendarIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-      <line x1="16" x2="16" y1="2" y2="6" />
-      <line x1="8" x2="8" y1="2" y2="6" />
-      <line x1="3" x2="21" y1="10" y2="10" />
-    </svg>
-  )
-}
 
-
-function FlagIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
-      <line x1="4" x2="4" y1="22" y2="15" />
-    </svg>
-  )
-}
   return (
       <div>
+        <div className='flex items-start px-4 pt-4'>
+        <Link to={`/`}>
+          <button
+            className='btn glass bg-info text-white'
+          >
+            <BiSolidHome/>
+          </button></Link>
+        </div>
       <section className="w-full py-12 md:py-24">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">
@@ -85,8 +52,8 @@ function FlagIcon(props) {
             </div>
           </div>
           <div className="flex w-full max-w-sm flex-col gap-2 min-[400px]:flex-row">
-            <input className="max-w-xs w-full" placeholder="Enter your email" type="email" />
-            <button size="lg">Sign Up</button>
+            <input className="max-w-xs w-full rounded-lg" placeholder="Enter your email" type="email" />
+            <button size='btn glass bg-blue-300'>Sign Up</button>
           </div>
         </div>
       </div>
@@ -136,6 +103,48 @@ function FlagIcon(props) {
         </div>
       </section></div>
   )
+  function CalendarIcon(props) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+        <line x1="16" x2="16" y1="2" y2="6" />
+        <line x1="8" x2="8" y1="2" y2="6" />
+        <line x1="3" x2="21" y1="10" y2="10" />
+      </svg>
+    )
+  }
+  
+  
+  function FlagIcon(props) {
+    return (
+      <svg
+        {...props}
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z" />
+        <line x1="4" x2="4" y1="22" y2="15" />
+      </svg>
+    )
+  }
 }
 
 export default Leaderboard;

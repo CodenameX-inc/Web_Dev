@@ -14,6 +14,8 @@ import { PORT } from "../../config";
 const index = () => {
   const [loading, setLoading] = useState("");
   const navigate = useNavigate();
+  const captionTextDark = 'text-gray-200';
+  const captionText = 'text-gray-400'
 
   useEffect(() => {
     setLoading(true);
@@ -83,7 +85,7 @@ const index = () => {
                 Solve problems. Sharpen skills.
               </h1>
               <div className="flex items-center justify-center">
-                <p className="max-w-[700px] text-gray-500 mx-10 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark:text-gray-500">
+                <p className={`max-w-[700px] text-gray-500 mx-10 md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed dark: ${captionTextDark}`}>
                   Practice coding problems, track your progress, and compete
                   with friends.
                 </p>
@@ -161,7 +163,7 @@ const index = () => {
             </Link>
           </div>
         </section>
-        <section className="bg-gray-100 py-12 lg:py-16 dark:bg-gray-800">
+        <section className="bg-gray-700 py-12 lg:py-16 dark:bg-gray-800">
           <div className="container grid items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:grid-cols-[1fr_600px] xl:grid-cols-[1fr_700px]">
             {/* TODO: drop a picture Arik's team here */}
             <img
@@ -176,12 +178,12 @@ const index = () => {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Practice coding problems
                 </h2>
-                <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[500px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark:${captionTextDark}`}>
                   "ABEH! CP karle, wasehi job market me waat lagi hein, aur
                   dusri tara AI bhi Aa gaya.. CP karega to aage badhne ka chance
                   milega"
                 </p>
-                <p className="max-w-[400px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[400px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark:${captionTextDark}`}>
                   - (probably) someone among these genius trio
                 </p>
               </div>
@@ -203,7 +205,7 @@ const index = () => {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Organize your tasks
                 </h2>
-                <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[500px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark: ${captionTextDark} `}>
                   Our TODO list app helps you manage your tasks effectively. You
                   can create multiple lists, set deadlines, and track your
                   progress. Whether you're preparing for a contest or managing
@@ -228,7 +230,7 @@ const index = () => {
             />
           </div>
         </section>
-        <section className="py-12 lg:py-16">
+        <section className="py-12 lg:py-16 bg-gray-700">
           <div className="container grid items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:grid-cols-[1fr_600px] xl:grid-cols-[1fr_700px]">
             <img
               alt="Image"
@@ -242,7 +244,7 @@ const index = () => {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Compete with friends
                 </h2>
-                <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[500px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark:${captionTextDark}`}>
                   Join contests, earn points, and climb the leaderboard. Our
                   platform allows you to create custom contests or participate
                   in community-driven events. Let the coding battles begin!
@@ -273,7 +275,7 @@ const index = () => {
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Learn and improve
                 </h2>
-                <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[500px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark:${captionTextDark}`}>
                   Access editorial solutions, practice problems with hints, and
                   learn from the best. Our platform provides valuable resources
                   to help you master data structures, algorithms, and
@@ -291,14 +293,14 @@ const index = () => {
             </div>
           </div>
         </section>
-        <section className="py-12 lg:py-16">
+        <section className="py-12 lg:py-16 bg-gray-700">
           <div className="container grid items-center gap-6 px-4 sm:gap-8 sm:px-6 lg:grid-cols-[1fr_600px] xl:grid-cols-[1fr_700px]">
             <div className="flex flex-col justify-center space-y-4">
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl">
                   Connect with the community
                 </h2>
-                <p className="max-w-[500px] text-gray-500 md:text-xl/relaxed xl:text-base/relaxed dark:text-gray-400">
+                <p className={`max-w-[500px] ${captionText} md:text-xl/relaxed xl:text-base/relaxed dark:${captionTextDark}`}>
                   Discuss problems, share tips, and make friends. Our platform
                   features a social hub where you can interact with other users,
                   form study groups, and participate in knowledge exchange.
@@ -350,7 +352,7 @@ const index = () => {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-gray-50 dark:bg-gray-950 border-gray-200/40 dark:border-gray-800/40">
+      <footer className="border-t bg-slate-600 dark:bg-gray-950 border-gray-200/40 dark:border-gray-800/40">
         <div className="container grid md:grid-cols-3 items-center gap-4 px-4 py-4 text-sm sm:gap-6 sm:px-6 lg:gap-8 lg:px-8">
           <Link
             className="flex items-center space-x-2 text-gray-900 font-semibold"

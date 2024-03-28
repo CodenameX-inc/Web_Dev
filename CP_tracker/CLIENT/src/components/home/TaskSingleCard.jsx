@@ -7,6 +7,7 @@ import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
 import React, { useState } from 'react';
 import TaskModal from './TaskModal';
+import getStatusColor from '../UI/CustomStatusColor';
 import UpdateTaskModal from './UpdateTaskModal';
 
 const TaskSingleCard = ({ task }) => {
@@ -15,7 +16,7 @@ const TaskSingleCard = ({ task }) => {
 
   return (
     <div className='container border-2 border-gray-500 rounded-lg px-4 py-2 m-4 relative hover:shadow-xl'>
-      <h2 className='absolute top-1 right-2 px-4 py-1 bg-red-300 rounded-lg'>
+      <h2 className={`absolute top-1 right-2 px-4 py-1 rounded-lg ${getStatusColor(task.status)}`}>
         {task.status}
       </h2>
       <h4 className='my-2 text-gray-500'>{task.uid}</h4>
@@ -48,7 +49,11 @@ const TaskSingleCard = ({ task }) => {
         <TaskModal task={task} onClose={() => setShowModal(false)} />
       )}
       {showUpdateModal && (
-        <UpdateTaskModal task={task} onClose={() => setShowUpdateModal(false)} />
+        <UpdateTaskModal 
+        task={task} 
+        uid={task.uid}
+        onClose={() => setShowUpdateModal(false)} 
+        />
       )}
     </div>
   );
