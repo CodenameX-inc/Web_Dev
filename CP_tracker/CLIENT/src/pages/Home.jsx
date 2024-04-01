@@ -35,8 +35,8 @@ const Home = () => {
           setLoading(false);
         });
       }
-      loadData();
-    }, []);
+      loadData(); 
+    }, [authState.token]);
   
     return (
       <div className='p-4 h-screen max-w-screen'>

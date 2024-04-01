@@ -4,13 +4,35 @@
 import { Button, Modal } from "flowbite-react";
 import { useState } from "react";
 import { HiOutlineExclamationCircle } from "react-icons/hi";
+import  {AiOutlineClose} from 'react-icons/ai'
 
 function Component() {
   const [openModal, setOpenModal] = useState(false);
 
+  const handleDeleteTask = async () => {
+    setOpenModal(false)
+    // setLoading(true);
+    axios
+      .delete(`http://localhost:${PORT}/tasks/delete-task/${task.uid}`,{
+        headers: {'Authorization':authState.token}
+      })
+      .then(() => {
+        // setLoading(false);
+        enqueueSnackbar('Task Deleted successfully', { variant: 'success' });
+        navigate('/');
+      })
+      .catch((error) => {
+        // setLoading(false);
+        // alert('An error happened. Please Chack console');
+        enqueueSnackbar('Error', { variant: 'error' });
+        console.log(error.message);
+      });
+  };
   return (
     <>
-      <Button onClick={() => setOpenModal(true)}>Toggle modal</Button>
+      <Button onClick={() => setOpenModal(true)}>
+
+      </Button>
       <Modal show={openModal} size="md" onClose={() => setOpenModal(false)} popup>
         <Modal.Header />
         <Modal.Body>
@@ -20,7 +42,7 @@ function Component() {
               Are you sure you want to delete this product?
             </h3>
             <div className="flex justify-center gap-4">
-              <Button color="failure" onClick={() => setOpenModal(false)}>
+              <Button color="failure" onClick={() => handleDeleteTask}>
                 {"Yes, I'm sure"}
               </Button>
               <Button color="gray" onClick={() => setOpenModal(false)}>

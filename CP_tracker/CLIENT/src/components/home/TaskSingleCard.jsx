@@ -42,7 +42,7 @@ const TaskSingleCard = ({ task }) => {
           onClick={()=> setShowUpdateModal(true, task.uid)}  
         />
         {/* </Link> */}
-        <Link to={`/tasks/delete-task/${task}`}>
+        <Link to={`/tasks/delete-task/${task.uid}`}>
           <MdOutlineDelete className='text-2xl text-red-600 hover:text-black' />
         </Link>
       </div>
