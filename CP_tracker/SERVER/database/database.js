@@ -54,13 +54,12 @@ async function closePool() {
         console.error("Error closing connection pool:", err);
     }
 }
-
-export async function getAllTasks() {
+export async function getAllTasks1(taskID) {
     
     const db = await connection();
-    const sql = 'SELECT * FROM TaskList'; 
+    const sql = 'SELECT * FROM TaskList WHERE "uid" = :val1'; 
     try{
-        const result = await db.execute(sql);
+        const result = await db.execute(sql, {val1: UserID});
         const TaskList = result.rows;
         var list = [];
         console.log("TaskList:\n");
@@ -78,7 +77,45 @@ export async function getAllTasks() {
         // await db.close();
         return list;
     }catch(err){
-        console.log("Error Inserting data: "+ err.message);
+        console.log("Error loading data (getAllTasks1): "+ err.message);
+        return null;
+    } finally{
+        if(db){
+            try{await db.close();}
+            catch(e){console.log("Error closing DB on Get All Tasks: "+e.message);}
+        }
+    }
+}
+// export async function getUser
+export async function getAllTasks(UserID) {
+    
+    const db = await connection();
+    const sql = 'SELECT * FROM TaskList WHERE "userID" = :val1'; 
+    try{
+        const result = await db.execute(sql, {val1: UserID});
+        const TaskList = result.rows;
+        var list = [];
+        console.log("TaskList:\n", TaskList);
+        for(let i of TaskList){
+            
+            list.push({
+                uid: i.uid,
+                platform: i.platform,
+                taskURL: i.taskURL,
+                taskName: i.taskName,
+                status: i.status,
+                note: i.note,
+                total: i.TotalTasks,
+                pending: i.PendingTask,
+                attempted: i.AttemptedTask,
+                revisit: i.RevisitTask
+            });
+        }
+        // console.log(list);
+        // await db.close();
+        return list;
+    }catch(err){
+        console.log("Error loading data: "+ err.message);
         return null;
     } finally{
         if(db){
@@ -99,12 +136,12 @@ getAllTasks()
   });
 */
 
-export async function getTaskByID(taskID) {
+export async function getTaskByID(taskID, userID) {
     // createTable();   //create table if not exists
     const db = await connection();
-    const sql = 'SELECT * FROM TaskList WHERE "uid" = :val1'; 
+    const sql = 'SELECT * FROM TaskList WHERE "uid" = :val1 AND "userID" = :val2'; 
     try{
-        const result = await db.execute(sql, {val1: taskID});
+        const result = await db.execute(sql, {val1: taskID, val2: userID});
         const TaskList = result.rows;
         const Task = result.rowsAffected;
         console.log("the Task:\n"+(TaskList||Task));
@@ -121,30 +158,30 @@ export async function getTaskByID(taskID) {
     }
 }
 
-export async function addTask(tasks)
+export async function addTask(tasks, userID)
 {
     var db=null;
-    var msg={};
     if(!tasks.platform) platform="OJ";
     try{
     db = await connection();
-    const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL") VALUES (:val1, :val2, :val3)';
+    const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL", "userID") VALUES (:val1, :val2, :val3, :val4)';
     const result = await db.execute(sql, 
     {
         val1:tasks.platform, 
         val2:tasks.taskName, 
-        val3:tasks.taskURL
+        val3:tasks.taskURL,
+        val4:userID
     });
     db.commit();
     console.log("Inserted data: \n" + result.rowsAffected);
     // await db.close();
-    return {message: "Inserted :\n" + tasks};
+    return 200;
     // return result.rowsAffected;
     }
     catch(err){
         console.error("Error creating data:", err);
         // await db.close();
-        return {error : err.message};
+        return 500;
     }finally{
         if(db){
             try{await db.close();}
@@ -154,9 +191,9 @@ export async function addTask(tasks)
 }
 export async function CreateUser(user){
     const db = await connection();
-    const sql = 'INSERT INTO USERS ("fullname", "email", "password") VALUES ( :usr, :em, :ps )';
+    const sql = 'INSERT INTO USERS ("FULLNAME", "EMAIL", "PASSWORD") VALUES ( :usr, :em, :ps )';
     try{
-        const res = db.execute(sql, {
+        const res = await db.execute(sql, {
             usr: user.username,
             em: user.email,
             ps: user.password
@@ -165,7 +202,7 @@ export async function CreateUser(user){
         console.log("User \n:", user);
         console.log("the res: "+ res);
         console.log('Signup successful');
-        return (await res).rowsAffected;
+        return (res).rowsAffected;
     }
     catch(err){
         
@@ -180,28 +217,22 @@ export async function CreateUser(user){
         }
     }
 }
-
-export async function LoginUser(user) {
+export async function getTaskInfo({userid}){
     const db = await connection();
-    const sql = `SELECT * FROM USERS WHERE "email" = :val1`;
+    const sql = `SELECT * FROM TaskList WHERE "userID" = :val1`;
     try {
         const res = await db.execute(sql, {
-            val1: user.email
+            val1: userid
         });
-        await db.close();
+        await db.commit();
+        console.log("Task INFO FOUND: ", JSON.stringify(res.rows));
+        console.log(res.rows);
 
         if (res.rows.length === 0) {
-            console.log("User not found");
+            console.log("User not found (FRON GTB)");
             return null;
         }
-
-        const retrievedUser = res.rows[0];
-        console.log("USER FOUND:", retrievedUser.userID, retrievedUser.email, retrievedUser.password);
-        
-        // Now you have access to the password retrieved from the database
-        const retrievedPassword = retrievedUser.password;
-
-        // You can return the retrieved user data or use it as needed
+        const retrievedUser = res.rows;        
         return retrievedUser;
     } catch (e) {
         console.log("Error:", e.message);
@@ -214,6 +245,105 @@ export async function LoginUser(user) {
                 console.log("Error: " + e.message);
             }
         }
+    }
+}
+export async function getUserID(email){
+    const db = await connection();
+    const sql = `SELECT "USERID" FROM USERS WHERE "EMAIL" = :val1`;
+    try {
+        const res = await db.execute(sql, {
+            val1: email
+        });
+        await db.commit();
+
+        if (res.rows.length === 0) {
+            console.log("User not found");
+            return null;
+        }
+
+        const retrievedUser = res.rowsAffected;
+        // console.log("USER FOUND:", retrievedUser.userID, retrievedUser.email, retrievedUser.password);
+        
+        return retrievedUser;
+    } catch (e) {
+        console.log("Error:", e.message);
+        return null;
+    } finally {
+        if (db) {
+            try {
+                await db.close();
+            } catch (e) {
+                console.log("Error: " + e.message);
+            }
+        }
+    }
+}
+export async function getUser(userid){
+    const db = await connection();
+    let res;
+    const sql = `SELECT "EMAIL", "IMAGE", "FULLNAME" FROM USERS WHERE "USERID" = :val1`;
+    try {
+        res = await db.execute(sql, {
+            val1: userid
+        });
+        await db.commit();
+
+        if (res.rows.length === 0) {
+            console.log("User not found");
+            return null;
+        }
+
+        const retrievedUser = res.rows;
+        console.log("from server: USER: ",retrievedUser);
+        // console.log("USER FOUND:", retrievedUser.userID, retrievedUser.email, retrievedUser.password);
+        
+        return retrievedUser;
+    } catch (e) {
+        console.log("Error:", e.message);
+        return null;
+    } finally {
+        if (db) {
+            try {
+                await db.close();
+            } catch (e) {
+                console.log("Error: " + e.message);
+            }
+        }
+    }
+}
+//TODO: MOVE Tasks info to TaskList
+export async function LoginUser(user) {
+    const db = await connection();
+    const sql = `SELECT * FROM USERS WHERE "EMAIL" = :val1`;
+    try {
+        const res = await db.execute(sql, {
+            val1: user.email
+        });
+        // await db.commit();
+
+        if (res.rows.length === 0) {
+            console.log("User not found");
+            return null;
+        }
+        const retrievedUser = res.rows[0];
+        console.log(res.rows);
+        
+        // console.log(JSON.stringify(retrievedUser))
+        // console.log("USER FOUND:", retrievedUser.USERID, retrievedUser.EMAIL, retrievedUser.PASSWORD);
+        
+        return retrievedUser;
+    } catch (e) {
+        console.log("Error:", e.message);
+        return null;
+    } finally {
+        // await db.close();
+        // if (db) {
+        //     try {
+        //         await db.close();
+        //     } catch (e) {
+        //         console.log("Error: " + e.message);
+        //     }
+        // }
     }
 }
 
