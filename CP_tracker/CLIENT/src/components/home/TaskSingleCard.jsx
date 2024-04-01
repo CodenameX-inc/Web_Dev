@@ -12,6 +12,7 @@ import UpdateTaskModal from './UpdateTaskModal';
 
 const TaskSingleCard = ({ task }) => {
   const [showModal, setShowModal] = useState(false);
+  
   const [showUpdateModal, setShowUpdateModal] = useState(false);
 
   return (

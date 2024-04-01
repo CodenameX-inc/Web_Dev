@@ -3,19 +3,13 @@ import { useNavigate, useParams } from 'react-router-dom';
 // import { Button } from ""
 import {Link} from "react-router-dom"
 import { BiSolidHome } from 'react-icons/bi'
-
+// import Navbar from './navbar'
 const Leaderboard = ()=> {
 
   return (
       <div>
-        <div className='flex items-start px-4 pt-4'>
-        <Link to={`/`}>
-          <button
-            className='btn glass bg-info text-white'
-          >
-            <BiSolidHome/>
-          </button></Link>
-        </div>
+        {/* <Navbar/> */}
+        
       <section className="w-full py-12 md:py-24">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col gap-4 items-center justify-center text-center">

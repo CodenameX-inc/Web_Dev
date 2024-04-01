@@ -6,10 +6,22 @@ import { MdOutlineAddBox, MdOutlineDelete } from 'react-icons/md';
 import TaskModal from './TaskModal';
 import { BiBookContent } from 'react-icons/bi';
 import getStatusColor from '../UI/CustomStatusColor';
+import  {useAuth} from '../../structure/GlobalStateProvider'
+
 
 //TODO: DONE
 const TaskTable = ({ tasks }) => {
   const [selectedTask, setSelectedTask] = useState(null);
+  const { authState, setAuthState } = useAuth();
+  useEffect(()=>{
+        // let token = (cookies.get('TOKEN'));
+        if(!authState.isAuthenticated)
+        {
+          alert("User token not verified or not logged in... Retrying..");
+          navigate("/login");
+        }
+        
+      },[]);
   
   return (
     <div>

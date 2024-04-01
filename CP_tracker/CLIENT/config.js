@@ -1,4 +1,6 @@
 export const PORT = 5000;
+export const BASEURL = "http://localhost:5000"
+export const logoImg = "https://img.freepik.com/free-vector/code-logo-template-gradient-design_23-2148810395.jpg?size=338&ext=jpg&ga=GA1.1.1395880969.1711584000&semt=ais"
 
 //IMAGES -> Home page
 export const ind_intro="https://mist.ac.bd/storage/photos/cse/Front%20Page%20Pics/labs.jpg";
@@ -10,3 +12,10 @@ export const ind_comm="https://scontent.fdac138-1.fna.fbcdn.net/v/t39.30808-6/40
 
 //IMAGES -> Login Page
 export const loginImage = "https://png.pngtree.com/background/20220714/original/pngtree-welcome-back-wide-banner-picture-image_1608371.jpg"
+
+
+//IMAGES -> Profile images
+export const a1 = "https://v1.tailwindcss.com/_next/static/media/tailwindcss-mark.6ea76c3b72656960a6ae5ad8b85928d0.svg"
+export const prof =  "https://flowbite-react.com/images/people/profile-picture-5.jpg"
+
+

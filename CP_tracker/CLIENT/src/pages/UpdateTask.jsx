@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { PORT } from '../../config.js';
+import  {useAuth} from '../structure/GlobalStateProvider.jsx'
+
 
 const UpdateTask = ({task}) => {
   const {id} = task.uid;
@@ -15,11 +17,14 @@ const UpdateTask = ({task}) => {
   var [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { authState, setAuthState } = useAuth();
 
   useEffect(() => {
     setLoading(true);
     
-    axios.get(`http://localhost:${PORT}/tasks/get-task/${id}`)
+    axios.get(`http://localhost:${PORT}/tasks/get-task/${id}`,{
+      headers: {'Authorization':authState.token}
+    })
     .then((response) => {
         setURL(response.data.taskURL)
         setStatus(response.data.status)
@@ -98,7 +103,7 @@ const UpdateTask = ({task}) => {
           <option disabled defaultValue>Set Status</option>
           <option value='Pending'>Pending</option>
           <option value='Attempted'>Attempted</option>
-          <option value='Solved/Done'>Solved/Done</option>
+          <option value='Done'>Solved/Done</option>
           <option value='Revisit'>Revisit</option>
           </select>
         </label>

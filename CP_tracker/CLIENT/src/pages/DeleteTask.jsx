@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {PORT} from '../../config.js';
+import  {useAuth} from '../structure/GlobalStateProvider.jsx'
+
 
 const DeleteTask = () => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +14,8 @@ const DeleteTask = () => {
   const { task } = useParams();
   // var [task, setData]=useState({});
   const { enqueueSnackbar } = useSnackbar();
+  const { authState, setAuthState } = useAuth();
+
 
   // const getTask = async () => {
   // axios
@@ -31,10 +35,12 @@ const DeleteTask = () => {
   //   setLoading(false);
   // });
   // }
-  const handleDeleteTask = () => {
+  const handleDeleteTask = async () => {
     setLoading(true);
     axios
-      .delete(`http://localhost:${PORT}/tasks/delete-task/${task.uid}`)
+      .delete(`http://localhost:${PORT}/tasks/delete-task/${task.uid}`,{
+        headers: {'Authorization':authState.token}
+      })
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Task Deleted successfully', { variant: 'success' });
@@ -44,7 +50,7 @@ const DeleteTask = () => {
         setLoading(false);
         // alert('An error happened. Please Chack console');
         enqueueSnackbar('Error', { variant: 'error' });
-        console.log(error);
+        console.log(error.message);
       });
   };
 

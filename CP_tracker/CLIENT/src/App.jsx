@@ -9,20 +9,30 @@ import Index from './pages/index.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import Leaderboard from './pages/leaderboard.jsx'
+import ProtectedRoutes from './pages/ProtectedRoutes.jsx'
+import Profile from './pages/Profile.jsx'
+import Practice from './pages/Practice.jsx'
 
 const App = () => {
   return (
-    <Routes>
-    <Route path='/' element={<Index/>}/>
-      <Route path='/login' element={<Login/>}/>
-      <Route path='/signup' element={<Signup/>}/>
-      <Route path='/tasks/leaderboard' element={<Leaderboard/>}/>
-      <Route path='/tasks/all-tasks' element={<Home/>}/>
-      <Route path='/tasks/create-task' element={<CreateTasks/>}/>
-      <Route path='/tasks/get-task/:id' element={<ShowTask/>}/>
-      <Route path='/tasks/update-task/:id' element={<UpdateTask/>}/>
-      <Route path='/tasks/delete-task/:task' element={<DeleteTask/>}/>
-    </Routes>
+    // <ProtectedRoutes>
+      <Routes>
+        <Route ind element={<Index/>}/>
+        <Route path='/' element={<Index/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<Signup/>}/>
+        {/* <Route element={<ProtectedRoutes/>}> */}
+          <Route path='/tasks/profile' element={<Profile/>}/>
+          <Route path='/tasks/leaderboard' element={<Leaderboard/>}/>
+          <Route path='/tasks/all-tasks' element={<Home/>}/>
+          <Route path='/tasks/create-task' element={<CreateTasks/>}/>
+          <Route path='/tasks/get-task/:id' element={<ShowTask/>}/>
+          <Route path='/tasks/update-task/:id' element={<UpdateTask/>}/>
+          <Route path='/tasks/delete-task/:task' element={<DeleteTask/>}/>
+          <Route path='/practice' element={<Practice/>}/>
+        {/* </Route> */}
+        
+      </Routes>
   )
 }
 

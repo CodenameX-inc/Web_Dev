@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import * as conf from "../../config.js";
+// import Navbar from './Nav.jsx'
+// import Footer from './Footer.jsx'
 // import {Login, Signup, Home} from './App.jsx';
 import { MdOutlineAddBox, MdOutlineDelete } from "react-icons/md";
 
@@ -24,59 +26,7 @@ const index = () => {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="bg-gray-900 shadow-lg">
-        <div className="container flex items-center justify-between h-14 px-4 sm:px-6">
-          <Link className="flex items-center space-x-2 text-gray-50" href="#">
-            <TerminalIcon className="h-6 w-6" />
-            <span className="font-semibold">sharpen</span>
-          </Link>
-          <nav className="hidden space-x-4 lg:flex">
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              href="#"
-            >
-              Practice
-            </Link>
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              to="/tasks/all-tasks"
-            >
-              Tasks
-            </Link>
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              to="/tasks/leaderboard"
-            >
-              Leaderboard
-            </Link>
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              href="#"
-            >
-              Help
-            </Link>
-          </nav>
-          <div className="flex items-center space-x-4">
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              to="/login"
-            >
-              <UserIcon className="h-4 w-4 mr-1.5" />
-              Login
-            </Link>
-            <Link
-              className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100"
-              to="/signup"
-            >
-              Sign Up
-            </Link>
-          </div>
-          <button className="lg:hidden">
-            <MenuIcon className="h-6 w-6" />
-            <span className="sr-only">Toggle menu</span>
-          </button>
-        </div>
-      </header>
+      {/* <Navbar/> */}
       <main className="flex-1">
         <section className="flex flex-col items-center justify-center py-12 text-center">
           <div className="container space-y-2 text-center grid gap-6 px-4 sm:gap-8 sm:px-6 lg:gap-12">
@@ -352,34 +302,7 @@ const index = () => {
           </div>
         </section>
       </main>
-      <footer className="border-t bg-slate-600 dark:bg-gray-950 border-gray-200/40 dark:border-gray-800/40">
-        <div className="container grid md:grid-cols-3 items-center gap-4 px-4 py-4 text-sm sm:gap-6 sm:px-6 lg:gap-8 lg:px-8">
-          <Link
-            className="flex items-center space-x-2 text-gray-900 font-semibold"
-            href="#"
-          >
-            <TerminalIcon className="h-4 w-4" />
-            <span>sharpen</span>
-          </Link>
-          <nav className="flex items-center justify-center space-x-4 text-gray-500 md:justify-end md:text-right lg:order-3 lg:space-x-2 lg:text-gray-400">
-            <Link
-              className="font-medium underline"
-              href="mailto:iftekharulislam1594@gmail.com"
-            >
-              Contact
-            </Link>
-            <Link className="font-medium underline" href="#">
-              Terms
-            </Link>
-            <Link className="font-medium underline" href="#">
-              Privacy
-            </Link>
-          </nav>
-          <p className="flex items-center justify-center text-center text-gray-500 md:order-3 lg:order-2 lg:text-gray-400">
-            © 2024 Codename-X Inc. All rights reserved.
-          </p>
-        </div>
-      </footer>
+      {/* <Footer/> */}
     </div>
   );
 };

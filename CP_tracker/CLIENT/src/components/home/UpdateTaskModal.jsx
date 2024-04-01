@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import { Link } from 'react-router-dom'
-import { AiOutlineClose } from 'react-icons/ai';
+import { AiOutlineClose, AiOutlineEdit } from 'react-icons/ai';
 import { PiBookOpenTextLight } from 'react-icons/pi';
 import { BiUserCircle } from 'react-icons/bi';
 import axios from 'axios';
@@ -8,9 +8,11 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import { PORT } from '../../../config.js';
+import  {useAuth} from '../../structure/GlobalStateProvider.jsx'
 
 
 const UpdateTaskModal = ({ task, onClose, uid }) => {
+  const { authState, setAuthState } = useAuth();
 
   var [taskName, setName] = useState('');
   var [taskURL, setURL] = useState('');
@@ -31,7 +33,9 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
     };                              
     setLoading(true);
     axios
-      .put(`http://localhost:${PORT}/tasks/update-task/${id}`, data)
+      .put(`http://localhost:${PORT}/tasks/update-task/${id}`, data,{
+        headers: {'Authorization':authState.token}
+      })
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Task Edited successfully', { variant: 'success' });
@@ -110,7 +114,7 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
           <option disabled defaultValue>Set Status</option>
           <option value='Pending'>Pending</option>
           <option value='Attempted'>Attempted</option>
-          <option value='Solved/Done'>Solved/Done</option>
+          <option value='Done'>Solved/Done</option>
           <option value='Revisit'>Revisit</option>
           </select>
         </label>

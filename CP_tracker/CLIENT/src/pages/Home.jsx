@@ -11,16 +11,20 @@ import TaskTable from '../components/home/TaskTable'
 import TaskModal from '../components/home/TaskModal'
 import TaskCard from '../components/home/TaskCard.jsx'
 import { BiSolidHome } from 'react-icons/bi'
-
+import  {useAuth} from '../structure/GlobalStateProvider.jsx'
 
 const Home = () => {
     const [tasks, setTasks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [showType, setShowType] = useState('card');
+    const { authState, setAuthState } = useAuth();
     useEffect(() => {
       setLoading(true);
-      axios
-        .get(`http://localhost:${PORT}/tasks/all-tasks`)
+      async function loadData(){
+        axios
+        .get(`http://localhost:${PORT}/tasks/all-tasks/`,{
+          headers: {'Authorization':authState.token}
+        })
         .then((response) => {
           console.log("FROM SERVER to CLIENT: "+ response);
           setTasks(response.data);
@@ -30,18 +34,12 @@ const Home = () => {
           console.log(error);
           setLoading(false);
         });
+      }
+      loadData();
     }, []);
   
     return (
-      <div className='p-4'>
-        <div className='flex items-start '>
-        <Link to={`/`}>
-          <button
-            className='btn glass bg-info text-white'
-          >
-            <BiSolidHome/>
-          </button></Link>
-        </div>
+      <div className='p-4 h-screen max-w-screen'>
         <div className='flex justify-center items-center gap-x-4'>
           <button
             className='btn glass btn-primary bg-blue-500'

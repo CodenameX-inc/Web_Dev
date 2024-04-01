@@ -5,6 +5,9 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useSnackbar } from 'notistack';
 import {PORT} from '../../config.js';
+import  {useAuth} from '../structure/GlobalStateProvider.jsx'
+
+// import Navbar from './navbar.jsx'
 
 const CreateTasks = () => {
   const [taskName, setName] = useState('');
@@ -13,8 +16,10 @@ const CreateTasks = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
+  const { authState, setAuthState } = useAuth();
 
-  const handleSaveTask = () => {
+
+  const handleSaveTask = async () => {
     const data = {
       taskName: taskName,
       taskURL: taskURL,
@@ -22,7 +27,9 @@ const CreateTasks = () => {
     };
     setLoading(true);
     axios
-      .post(`http://localhost:${PORT}/tasks/add-task`, data)
+      .post(`http://localhost:${PORT}/tasks/add-task`, data,{
+        headers: {'Authorization':authState.token}
+      })
       .then(() => {
         setLoading(false);
         enqueueSnackbar('Task Created successfully', { variant: 'success' });
@@ -38,7 +45,9 @@ const CreateTasks = () => {
 
   return (
     <div className='p-4'>
-      <BackButton />
+      {/* <BackButton /> */}
+      <Navbar/>
+      <main>
       <h1 className='text-3xl my-4'>Create Task</h1>
       {loading ? <Spinner /> : ''}
       <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
@@ -75,6 +84,7 @@ const CreateTasks = () => {
           ADD
         </button>
       </div>
+      </main>
     </div>
   );
 }

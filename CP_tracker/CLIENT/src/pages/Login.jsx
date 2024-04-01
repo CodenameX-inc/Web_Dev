@@ -10,65 +10,61 @@ import { AiOutlineEdit } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import * as conf from "../../config.js";
 import { SocialIcon } from 'react-social-icons';
-// import {Login, Login, Home} from './App.jsx';
-import { BiSolidHome } from 'react-icons/bi'
-
 import { PORT } from "../../config";
+import { useAuth } from "../structure/GlobalStateProvider.jsx";
+
+// import {store} from '../Redux/store.js';
+// import { getUser } from "../Redux/users/user.actions.js";
+// import { useDispatch, useSelector } from "react-redux";
+// import { getUser } from "../Redux/users/user.actions.js";
 
 const Login = () => {
-    // const [usr, setUser] = useState('');
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-    // var [confirmpass, setCPass] = useState('');
-    // const [passwordsMatch, setPasswordsMatch] = useState(true);
-    // const { enqueueSnackbar } = useSnackbar();
-
-    const SubmitLoginForm = (e)=>{
-      // setLoading(true);
-        // if(pass===confirmpass)
-        // {
-          // setPasswordsMatch(true);
-          e.preventDefault();
+    const { enqueueSnackbar } = useSnackbar();
+    const {authState, setAuthState} = useAuth();
+    const [loading, setLoading] = useState(false);
+    
+    // const dispatch = useDispatch()
+    // const {auth, token, loading, err} = useSelector((state)=>{
+    //   state.userReducer
+    // })
+   const SubmitLoginForm = (e)=>{
+        e.preventDefault();
+        // dispatch(getUser({email,pass}))
+        //  Old verification method
+        setLoading(true);
+        axios.defaults.withCredentials=true;
         axios.post(`http://localhost:${PORT}/login`,{
           email:email, 
           password:pass
         })
-        .then(() => {
-          // alert('Login successful');
+        .then((result) => {
+          setLoading(false); 
           console.log('PROMPTED');
-        // enqueueSnackbar('User Registered successfully', { variant: 'success' });
-        // navigate('/tasks/all-tasks');
+          const {msg, token, status, usr}=result.data;
+          console.log("Token (Login): ", token);
+          setAuthState({
+            token: token,
+            isAuthenticated: ((status===1)?true:false),
+            user: usr
+          })
+          // Navigate
+          // console.log(result,result.user);
+          // window.location.href = `/profile/${result.data.userid}`;
+          enqueueSnackbar('Logged in ', { variant: 'success' });
         })
         .catch((error) => {
-          alert('Login failed: ' + error.message);
-        // alert('An error happened. Please Chack console');
-        // enqueueSnackbar('Error', { variant: 'error' });
+          setLoading(false);
+        enqueueSnackbar('Error logging in', { variant: 'error' });
         console.log(error);
-        });
-          // }?
-        
-        // else{
-          // setPasswordsMatch(false);
-        // }
-      }
-    //   // useEffect(() => {
-    //     if (pass === confirmpass) {
-    //         setPasswordsMatch(true);
-    //     } else {
-    //         setPasswordsMatch(false);
-    //     }
-    // }, [pass, confirmpass]);
+        }); 
+      };
+      
   return (
-    <div>
-    
     <div className="flex items-center justify-center">
-        <div className='absolute top-5 left-5'>
-        <Link to={`/`}>
-        <button className='btn glass bg-info text-white'>
-            <BiSolidHome/>
-        </button></Link>
-    </div>
       <div id="card" className="flex items-center justify-center py-2 md:py-5 lg:py-0 lg:m-8">
+        {loading? <Spinner/>:''}
         <Card className="w-full max-w-sm overflow-hidden mt-20 bg-slate-700">
           <div className="flex flex-col items-center justify-center h-[200px]">
             <img
@@ -101,71 +97,72 @@ const Login = () => {
         </Card>
       </div>
       <div id="login-form" className="flex items-center justify-center py-8 lg:m-8 md:py-20 lg:py-0">
-      <Card className="w-[500px] max-w-sm overflow-hidden mt-20 bg-slate-700">
-        <div className="mx-auto max-w-sm space-y-6 h-fit">
-          <form onSubmit={(e)=>SubmitLoginForm(e)}>
-            <div className="space-y-2 text-center">
-              <h1 className="text-2xl font-bold px-8 m-4">Login using Email</h1>
-            </div>
-            <div className="space-y-4">
-              {/* <div className="space-y-2">
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="username"
-                  value={usr}
-                  onChange={(e) => setUser(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-600"
-                />
-              </div> */}
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  required
-                  type="email"
-                  id="email"
-                  placeholder="youremail@abc.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                />
+        <Card className="w-[500px] max-w-sm overflow-hidden mt-20 bg-slate-700">
+          <div className="mx-auto max-w-sm space-y-6 h-fit">
+            <form onSubmit={(e)=>SubmitLoginForm(e)}>
+              <div className="space-y-2 text-center">
+                <h1 className="text-2xl font-bold px-8 m-4">Login using Email</h1>
               </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
-                </label>
-                <input
-                  required
-                  type="password"
-                  id="password"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                />
+              <div className="space-y-4">
+                {/* <div className="space-y-2">
+                  <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    Username
+                  </label>
+                  <input
+                    required
+                    type="text"
+                    id="username"
+                    value={usr}
+                    onChange={(e) => setUser(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-600"
+                  />
+                </div> */}
+                <div className="space-y-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                    Email
+                  </label>
+                  <input
+                    required
+                    type="email"
+                    id="email"
+                    placeholder="youremail@abc.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    Password
+                  </label>
+                  <input
+                    required
+                    type="password"
+                    id="password"
+                    value={pass}
+                    onChange={(e) => setPass(e.target.value)}
+                    className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                  />
+                </div>
+                <div className="flex items-center justify-center">
+                  <button
+                    type="submit"
+                    className="w-fit px-10 py-2 btn glass bg-green-300 btn-success"
+                    onClick={(e)=>SubmitLoginForm(e)}
+                  >
+                    Login
+                  </button>
+                </div>
+                <Link className="w-full inline-block text-sm underline" to="/login">
+                  Login instead
+                </Link>
               </div>
-              <div className="flex items-center justify-center">
-                <button
-                  type="submit"
-                  className="w-fit px-10 py-2 btn glass bg-green-300 btn-success"
-                  onClick={(e)=>SubmitLoginForm(e)}
-                >
-                  Login
-                </button>
-              </div>
-              <Link className="w-full inline-block text-sm underline" to="/login">
-                Login instead
-              </Link>
-            </div>
-          </form>
-        </div>
-      </Card>
-    </div>
-    </div>
+            </form>
+          </div>
+        </Card>
+      </div>
+      {/* TODO: might wanna replace this snackbar*/}
+      {/* {err?(enqueueSnackbar('Invalid Credentials', { variant: 'error' })):''} */}
     </div>
   );
   

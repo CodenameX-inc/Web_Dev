@@ -12,6 +12,7 @@ import * as conf from "../../config.js";
 import { SocialIcon } from 'react-social-icons';
 // import {Login, Signup, Home} from './App.jsx';
 import { BiSolidHome } from 'react-icons/bi'
+// import navbar from './navbar.jsx'
 
 import { PORT } from "../../config";
 
@@ -21,7 +22,7 @@ const Signup = () => {
     const [pass, setPass] = useState('');
     // var [confirmpass, setCPass] = useState('');
     // const [passwordsMatch, setPasswordsMatch] = useState(true);
-    // const { enqueueSnackbar } = useSnackbar();
+    const { enqueueSnackbar } = useSnackbar();
 
     const SubmitLoginForm = (e)=>{
       // setLoading(true);
@@ -37,13 +38,14 @@ const Signup = () => {
         .then(() => {
           // alert('Signup successful');
           console.log('PROMPTED');
-        // enqueueSnackbar('User Registered successfully', { variant: 'success' });
-        // navigate('/tasks/all-tasks');
+        enqueueSnackbar('User Registered successfully', { variant: 'success' });
+        enqueueSnackbar('Now Login to Continue', { variant: 'info' });
+        window.location.href('/login');
         })
         .catch((error) => {
-          alert('Signup failed: ' + error.message);
+          // alert('Signup failed: ' + error.message);
         // alert('An error happened. Please Chack console');
-        // enqueueSnackbar('Error', { variant: 'error' });
+        enqueueSnackbar('Error Registering user', { variant: 'error' });
         console.log(error);
         });
           // }?
@@ -60,15 +62,7 @@ const Signup = () => {
     //     }
     // }, [pass, confirmpass]);
   return (
-    <div>
-    
     <div className="flex items-center justify-center">
-        <div className='absolute top-5 left-5'>
-        <Link to={`/`}>
-        <button className='btn glass bg-info text-white'>
-            <BiSolidHome/>
-        </button></Link>
-    </div>
       <div id="card" className="flex items-center justify-center py-2 md:py-5 lg:py-0 lg:m-8">
         <Card className="w-full max-w-sm overflow-hidden mt-20 bg-slate-700">
           <div className="flex flex-col items-center justify-center h-[200px]">
@@ -117,6 +111,7 @@ const Signup = () => {
                   required
                   type="text"
                   id="username"
+                  placeholder="Username"
                   value={usr}
                   onChange={(e) => setUser(e.target.value)}
                   className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-600"
@@ -130,6 +125,7 @@ const Signup = () => {
                   required
                   type="email"
                   id="email"
+                
                   placeholder="youremail@abc.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -143,6 +139,7 @@ const Signup = () => {
                 <input
                   required
                   type="password"
+                  placeholder="Password"
                   id="password"
                   value={pass}
                   onChange={(e) => setPass(e.target.value)}
@@ -165,7 +162,6 @@ const Signup = () => {
           </form>
         </div>
       </Card>
-    </div>
     </div>
     </div>
   );
