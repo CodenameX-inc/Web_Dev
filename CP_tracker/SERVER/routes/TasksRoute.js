@@ -247,7 +247,7 @@ router.delete('/delete-task/:uid', async (req, res)=>{
     }
     try{
       const uid = req.params.uid;
-      var msg = await deleteTask(uid);
+      var msg = await deleteTask(uid, decode.USERID);
       if(Object.keys(msg)[0]==='error'){
         return res.status(500).send(msg);
       }else if(Object.keys(msg)[0]==='message'){

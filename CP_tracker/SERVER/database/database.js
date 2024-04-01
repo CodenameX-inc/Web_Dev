@@ -381,16 +381,18 @@ export async function updateTask(taskName, taskURL, platform, status, note, uid)
     }
 }
 
-export async function deleteTask(taskID) {
+export async function deleteTask(taskID, userID) {
     let db;
-    const sql = 'DELETE FROM TaskList WHERE uid = :val1 ';
+    const sql = 'DELETE FROM TaskList WHERE "uid" = :val1 AND "userID" =:val2';
     var errMsg={error:""};
+    console.log("Trying to delete task with ID " + taskID+" from Userid: "+userID)
     try{
         db = await connection();
-        await db.execute(sql,{val1: taskID});
+        // console.log(taskID,
+        await db.execute(sql,{val1: taskID, val2:userID});
         await db.commit();
         // await db.close();
-        return {message:"Deleted task with ID " + taskID+"\n"};
+        return {message:"Deleted task with ID " + taskID+" from Userid: "+userID};
     }
     catch(err){
         console.error("Error deleting data:", err.message);
