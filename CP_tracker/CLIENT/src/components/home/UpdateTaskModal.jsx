@@ -20,6 +20,7 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
   var [note, setNote] = useState('');
   var [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  // const task = useParams(task)
   const {id} = task.uid;
   const { enqueueSnackbar } = useSnackbar();
 
@@ -67,13 +68,15 @@ const UpdateTaskModal = ({ task, onClose, uid }) => {
         <button className='btn glass btn-primary bg-blue-400' onClick={handleUpdateTask}>
           Save
         </button>
-        <div className='pl-20 '><p >If facing error:</p>
+        {/* <div className='pl-20 '><p >If facing error:</p>
           <Link to={{
               pathname: `/tasks/update-task/${task.uid}`,
-              state: { task: task }}}>
-              <AiOutlineEdit className='text-2xl text-yellow-600' />
-          </Link>
-        </div>
+              state: { task: task }}}
+              className="text-xl text-blue-600">
+              <AiOutlineEdit className='text-2xl text-blue-600' />
+              Update Menu
+          </Link>/
+        </div> */}
         
         </div>
         <div className='flex justify-start items-center gap-x-2'>

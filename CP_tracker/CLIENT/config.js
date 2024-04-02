@@ -18,4 +18,5 @@ export const loginImage = "https://png.pngtree.com/background/20220714/original/
 export const a1 = "https://v1.tailwindcss.com/_next/static/media/tailwindcss-mark.6ea76c3b72656960a6ae5ad8b85928d0.svg"
 export const prof =  "https://flowbite-react.com/images/people/profile-picture-5.jpg"
 
+export const oauth_client_id = "840490235299-q6c6p88qohsk5n9vfdolr1k1u071s735.apps.googleusercontent.com"
 

@@ -8,10 +8,10 @@ import {PORT} from '../../config.js';
 import  {useAuth} from '../structure/GlobalStateProvider.jsx'
 
 
-const DeleteTask = () => {
+const DeleteTask = ({uid}) => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { task } = useParams();
+  const { id } = useParams(uid);
   // var [task, setData]=useState({});
   const { enqueueSnackbar } = useSnackbar();
   const { authState, setAuthState } = useAuth();
@@ -38,7 +38,7 @@ const DeleteTask = () => {
   const handleDeleteTask = async () => {
     setLoading(true);
     axios
-      .delete(`http://localhost:${PORT}/tasks/delete-task/${task.uid}`,{
+      .delete(`http://localhost:${PORT}/tasks/delete-task/${id}`,{
         headers: {'Authorization':authState.token}
       })
       .then(() => {
@@ -61,11 +61,11 @@ const DeleteTask = () => {
       <h1 className='text-3xl my-4'>Delete Task</h1>
       {loading ? <Spinner /> : ''}
       <div className='flex flex-col items-center border-2 border-sky-400 rounded-xl w-[600px] p-8 mx-auto'>
-        <h3 className='text-2xl'>Are You Sure You want to delete this task with id {task.uid}?</h3>
-        <p className='text-2xl'>{task.taskName}</p>
+        <h3 className='text-2xl'>Are You Sure You want to delete this task with id {id}?</h3>
+        {/* <p className='text-2xl'>{task.taskName}</p>
         <p className='text-2xl'>{task.taskURL}</p>
         <p className='text-2xl'>{task.status}</p>
-        <p className='text-2xl'>{task.Note}</p>
+        <p className='text-2xl'>{task.Note}</p> */}
         <button
           className='p-4 bg-red-600 text-white m-8 w-full'
           onClick={handleDeleteTask}
@@ -78,3 +78,4 @@ const DeleteTask = () => {
 }
 
 export default DeleteTask;
+

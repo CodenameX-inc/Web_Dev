@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineEdit } from "react-icons/ai";
 import { BsInfoCircle } from "react-icons/bs";
 import * as conf from "../../config.js";
+import { useSnackbar } from 'notistack';
 // import Navbar from './Nav.jsx'
 // import Footer from './Footer.jsx'
 // import {Login, Signup, Home} from './App.jsx';
@@ -18,10 +19,14 @@ const index = () => {
   const navigate = useNavigate();
   const captionTextDark = 'text-gray-200';
   const captionText = 'text-gray-400'
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setLoading(true);
     axios.get(`http://localhost:${PORT}/`);
+    enqueueSnackbar("Welcome to the site! connect to internet to preview images", { variant: "default" });
+    enqueueSnackbar("You might wanna scroll below 😅😉", { variant: "info" });
+
   }, []);
 
   return (
@@ -234,7 +239,7 @@ const index = () => {
               </div>
               <Link
                 // className="inline-flex h-10 items-center justify-center rounded-md border border-gray-200 border-gray-200 bg-white px-8 text-sm font-medium shadow-sm transition-colors hover:bg-gray-100 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gray-950 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-800 dark:border-gray-800 dark:bg-gray-950 dark:hover:bg-gray-800 dark:hover:text-gray-50 dark:focus-visible:ring-gray-300"
-                to="/tasks/leaderboard"
+                to="/tasks/resources"
               >
                 <button className="btn glass btn-primary w-400px min-w-96">
                   Explore Resources

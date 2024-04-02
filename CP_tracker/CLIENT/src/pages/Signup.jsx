@@ -20,15 +20,31 @@ const Signup = () => {
     const [usr, setUser] = useState('');
     const [email, setEmail] = useState('');
     const [pass, setPass] = useState('');
-    // var [confirmpass, setCPass] = useState('');
+    var [confirmpass, setCPass] = useState('');
     // const [passwordsMatch, setPasswordsMatch] = useState(true);
     const { enqueueSnackbar } = useSnackbar();
-
+    function validateEmail(email) {
+      const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return re.test(String(email).toLowerCase());
+  }
     const SubmitLoginForm = (e)=>{
       // setLoading(true);
         // if(pass===confirmpass)
         // {
           // setPasswordsMatch(true);
+          if(pass===confirmpass){
+            // enqueueSnackbar('l address', { variant: 'error' });
+          }
+          else{
+            enqueueSnackbar("Passwords don't match", { variant: 'error' });
+            return;
+
+          }
+          if (!validateEmail(email)) {
+            enqueueSnackbar('Invalid email address', { variant: 'error' });
+            return;
+        }
+        if(pass)
           e.preventDefault();
         axios.post(`http://localhost:${PORT}/signup`,{
           username:usr,
@@ -62,154 +78,172 @@ const Signup = () => {
     //     }
     // }, [pass, confirmpass]);
   return (
-    <div className="flex items-center justify-center">
-      <div id="card" className="flex items-center justify-center py-2 md:py-5 lg:py-0 lg:m-8">
-        <Card className="w-full max-w-sm overflow-hidden mt-20 bg-slate-700">
-          <div className="flex flex-col items-center justify-center h-[200px]">
-            <img
-              alt="Image"
-              className="object-cover"
-              height="200"
-              src= {conf.loginImage}
-              style={{
-                aspectRatio: "400/200",
-                objectFit: "cover",
-              }}
-              width="400"
-            />
+    <div className="flex min-h-screen items-center bg-gray-700 p-4 lg:justify-center">
+      <div className="max flex flex-col overflow-hidden rounded-md bg-slate-500 shadow-lg md:flex-1 md:flex-row lg:max-w-screen-md">
+        <div className="bg-blue-600 p-4 py-6 text-white md:flex md:w-80 md:flex-shrink-0 md:flex-col md:items-center md:justify-evenly">
+          <div className="my-3 text-center text-4xl font-bold tracking-wider">
+            <a href="#">CP upsolve tracker</a>
           </div>
-          <label>LOGIN USING :</label>
-          <div className="flex items-center justify-center p-6">
-            <div className='flex justify-center items-center m-2'>
-                <Button outline gradientDuoTone="purpleToBlue">
-                <SocialIcon url='google.com' />
-                <p>Google</p>
-                </Button>
-            </div>
-            <div className='flex justify-center items-center m-2'>
-                <Button outline gradientDuoTone="pinkToOrange">
-                <SocialIcon url='github.com' />
-                <p>GitHub</p>
-                </Button>
-            </div>
+          <p className="mt-6 text-center font-normal text-gray-300 md:mt-0">
+            Solve, upsolve & revisit exciting CP problems and keep track of them
+          </p>
+          <p className="mt-10 flex flex-col items-center justify-center text-center">
+            <span>Have an account?</span>
+            <Link to="/login">
+              <Button className="btn glass bg-slate-200 text-blue-700 hover:text-slate-100">Login Instead</Button>
+              </Link>
+          </p>
+          <p className="mt-6 text-center text-sm text-gray-300">
+            Read our{" "}
+            <a href="#" className="underline">
+              terms
+            </a>{" "}
+            and{" "}
+            <a href="#" className="underline">
+              conditions
+            </a>
+          </p>
         </div>
-        </Card>
-      </div>
-      <div id="login-form" className="flex items-center justify-center py-8 lg:m-8 md:py-20 lg:py-0">
-      <Card className="w-[500px] max-w-sm overflow-hidden mt-20 bg-slate-700">
-        <div className="mx-auto max-w-sm space-y-6 h-fit">
-          <form onSubmit={(e)=>SubmitLoginForm(e)}>
-            <div className="space-y-2 text-center">
-              <h1 className="text-2xl font-bold px-8 m-4">Signup using Email</h1>
+        <div className="bg-white p-5 md:flex-1">
+          <h3 className="my-4 text-2xl font-semibold text-gray-700">
+            Account Login
+          </h3>
+          <form action="#" className="flex flex-col space-y-5">
+            
+            <div className="flex flex-col space-y-1">
+              <label htmlFor="username" className="text-sm font-semibold text-gray-500">
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                autoFocus
+                className="rounded border border-gray-300 px-4 py-2 transition duration-300 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+                value={usr}
+                onChange={(e)=>setUser(e.target.value)}
+              />
             </div>
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Username
-                </label>
-                <input
-                  required
-                  type="text"
-                  id="username"
-                  placeholder="Username"
-                  value={usr}
-                  onChange={(e) => setUser(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-green-400 focus:ring-1 focus:ring-green-600"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  Email
-                </label>
-                <input
-                  required
-                  type="email"
-                  id="email"
-                
-                  placeholder="youremail@abc.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+            <div className="flex flex-col space-y-1">
+              <label htmlFor="email" className="text-sm font-semibold text-gray-500">
+                Email address
+              </label>
+              <input
+                type="email"
+                id="email"
+                autofocus
+                className="rounded border border-gray-300 px-4 py-2 transition duration-300 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+                value={email}
+                onChange={(e)=>setEmail(e.target.value)}
+              />
+            </div>
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-semibold text-gray-500"
+                >
                   Password
                 </label>
-                <input
-                  required
-                  type="password"
-                  placeholder="Password"
-                  id="password"
-                  value={pass}
-                  onChange={(e) => setPass(e.target.value)}
-                  className="mt-1 block w-full px-3 py-2 bg-white border border-slate-300 rounded-md shadow-sm focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-                />
               </div>
-              <div className="flex items-center justify-center">
-                <button
-                  type="submit"
-                  className="w-fit px-10 py-2 btn glass bg-green-300 btn-success"
-                  onClick={(e)=>SubmitLoginForm(e)}
+              <input
+                type="password"
+                id="pass"
+                className="rounded border border-gray-300 px-4 py-2 transition duration-300 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+                value={pass}
+                onChange={(e) => setPass(e.target.value)}
+                    
+              />
+            </div>
+            <div className="flex flex-col space-y-1">
+              <div className="flex items-center justify-between">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-semibold text-gray-500"
                 >
-                  Signup
-                </button>
+                  Confirm Password
+                </label>
               </div>
-              <Link className="w-full inline-block text-sm underline" to="/login">
-                Login instead
-              </Link>
+              <input
+                type="password"
+                id="Cpass"
+                className="rounded border border-gray-300 px-4 py-2 transition duration-300 focus:border-transparent focus:outline-none focus:ring-4 focus:ring-blue-200"
+                value={confirmpass}
+                onChange={(e) => setCPass(e.target.value)}
+                    
+              />
+            </div>
+            <div className="flex items-center space-x-2">
+              {/* <input
+                type="checkbox"
+                id="remember"
+                className="h-4 w-4 rounded transition duration-300 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-offset-0"
+              /> */}
+              {/* <label htmlFor="remember" className="text-sm font-semibold text-gray-500">
+                Remember me
+              </label> */}
+            </div>
+            <div>
+              <Button
+                type="submit" className="flex items-center justify-center w-fit px-10 py-2 btn glass bg-blue-700 hover:bg-blue-700"
+                onClick={(e)=>SubmitLoginForm(e)}
+              >
+                Submit
+              </Button>
+            </div>
+            <div className="flex flex-col space-y-5">
+              <span className="flex items-center justify-center space-x-2">
+                <span className="h-px w-14 bg-gray-400"></span>
+                <span className="font-normal text-gray-500">or login with</span>
+                <span className="h-px w-14 bg-gray-400"></span>
+              </span>
+              <div className="flex flex-col space-y-4">
+                {/* Github */}
+                <a
+                  href="#"
+                  className="group flex items-center justify-center space-x-2 rounded-md border border-gray-800 px-4 py-2 transition-colors duration-300 hover:bg-gray-800 focus:outline-none"
+                >
+                  <span>
+                    <svg
+                      className="h-5 w-5 fill-current text-gray-800 group-hover:text-white"
+                      viewBox="0 0 16 16"
+                      version="1.1"
+                      aria-hidden="true"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"
+                      ></path>
+                    </svg>
+                  </span>
+                  <span className="text-sm font-medium text-gray-800 group-hover:text-white">
+                    Github
+                  </span>
+                </a>
+                <a
+                  href="#"
+                  className="group flex items-center justify-center space-x-2 rounded-md border border-blue-500 px-4 py-2 transition-colors duration-300 hover:bg-blue-500 focus:outline-none"
+                >
+                  <span>
+                    <svg
+                      className="text-red-500 group-hover:text-white"
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                    >
+                      <path 
+                      d="M6.29 18.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0020 3.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.073 4.073 0 01.8 7.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 010 16.407a11.616 11.616 0 006.29 1.84"></path>
+                    </svg>
+                  </span>
+                  <span className="text-sm font-medium text-blue-500 group-hover:text-white">
+                    Google
+                  </span>
+                </a>
+              </div>
             </div>
           </form>
         </div>
-      </Card>
+      </div>
     </div>
-    </div>
-  );
-  
-}
-
-
-function ChromeIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="12" cy="12" r="10" />
-      <circle cx="12" cy="12" r="4" />
-      <line x1="21.17" x2="12" y1="8" y2="8" />
-      <line x1="3.95" x2="8.54" y1="6.06" y2="14" />
-      <line x1="10.88" x2="15.46" y1="21.94" y2="14" />
-    </svg>
-  )
-}
-
-
-function GithubIcon(props) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-      <path d="M9 18c-4.51 2-5-2-7-2" />
-    </svg>
   )
 }
 

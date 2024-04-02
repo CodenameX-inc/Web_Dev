@@ -1,19 +1,28 @@
 
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { PiBookOpenTextLight } from 'react-icons/pi';
 import { BiUserCircle, BiShow } from 'react-icons/bi';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BsInfoCircle } from 'react-icons/bs';
 import { MdOutlineDelete } from 'react-icons/md';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import TaskModal from './TaskModal';
 import getStatusColor from '../UI/CustomStatusColor';
 import UpdateTaskModal from './UpdateTaskModal';
+import DeleteModal from './DeleteModal';
 
 const TaskSingleCard = ({ task }) => {
   const [showModal, setShowModal] = useState(false);
-  
+  const [showDelModal, setDelModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const navigate = useNavigate();
+  const [rerender, setRerender] = useState(false); // New state variable to trigger re-render
+
+  useEffect(()=>{
+    setRerender(prev => !prev);
+
+  },[showUpdateModal])
+
 
   return (
     <div className='container border-2 border-gray-500 rounded-lg px-4 py-2 m-4 relative hover:shadow-xl'>
@@ -42,9 +51,9 @@ const TaskSingleCard = ({ task }) => {
           onClick={()=> setShowUpdateModal(true, task.uid)}  
         />
         {/* </Link> */}
-        <Link to={`/tasks/delete-task/${task.uid}`}>
-          <MdOutlineDelete className='text-2xl text-red-600 hover:text-black' />
-        </Link>
+        {/* <Link to={`/tasks/delete-task/${task.uid}`}> */}
+          <MdOutlineDelete className='text-2xl text-red-600 hover:text-black' onClick={()=>setDelModal(true)} />
+        {/* </Link> */}
       </div>
       {showModal && (
         <TaskModal task={task} onClose={() => setShowModal(false)} />
@@ -56,8 +65,15 @@ const TaskSingleCard = ({ task }) => {
         onClose={() => setShowUpdateModal(false)} 
         />
       )}
+      {showDelModal && (
+        <DeleteModal 
+        task={task} 
+        uid={task.uid}
+        onClose={() => setDelModal(false)} 
+        />
+      )}
     </div>
   );
 };
 
-export default TaskSingleCard;
+export default TaskSingleCard; 

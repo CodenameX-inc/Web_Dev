@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSnackbar } from 'notistack';
 import  {useAuth} from '../structure/GlobalStateProvider.jsx'
 import { Dropdown } from "flowbite-react";
@@ -21,7 +21,7 @@ export default function Navbar() {
   const [usermail, setemail] = useState('');
   const { enqueueSnackbar } = useSnackbar();
   const { authState, setAuthState } = useAuth();
-
+  const navigate = useNavigate();
   
 function IsVal(url){
   (authState.isAuthenticated)? url: '/login';
@@ -33,7 +33,7 @@ const logout = () => {
       isAuthenticated: false,
       user: null
   });
-  return <Navigate to="/login" />
+  navigate('/')
   // Redirect to login page or perform other actions as needed
 };
   
@@ -83,8 +83,8 @@ function PracticeIcon(){
       <Link className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100" to="/tasks/all-tasks" >
         <TaskIcon className="h-4 w-4 mr-1.5" /> Tasks
       </Link>
-      <Link className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100" to="/tasks/leaderboard" >
-        <BoardIcon className="h-4 w-4 mr-1.5" /> Leaderboard
+      <Link className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100" to="/tasks/resources" >
+        <BoardIcon className="h-4 w-4 mr-1.5" /> Resources
       </Link>
       <Link className="flex items-center text-sm font-medium transition-colors text-gray-50 hover:text-gray-100" to="/tasks/practice" >
         <PracticeIcon className="h-4 w-4 mr-1.5" /> Practice

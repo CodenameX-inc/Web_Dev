@@ -12,7 +12,9 @@ import  {useAuth} from '../structure/GlobalStateProvider.jsx'
 const CreateTasks = () => {
   const [taskName, setName] = useState('');
   const [taskURL, setURL] = useState('');
-  // const [status, setStatus] = useState('');
+  const [note, setNote] = useState('');
+  // const [note, setNote] = useState('');
+  const [status, setStatus] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
@@ -23,6 +25,8 @@ const CreateTasks = () => {
     const data = {
       taskName: taskName,
       taskURL: taskURL,
+      note: note,
+      status: status
       // publishYear,
     };
     setLoading(true);
@@ -46,7 +50,7 @@ const CreateTasks = () => {
   return (
     <div className='p-4'>
       {/* <BackButton /> */}
-      <Navbar/>
+      {/* <Navbar/> */}
       <main>
       <h1 className='text-3xl my-4'>Create Task</h1>
       {loading ? <Spinner /> : ''}
@@ -71,15 +75,34 @@ const CreateTasks = () => {
             className='grow border-2 border-gray-500 px-4 py-2  w-full '
           />
         </div>
-        {/* <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Publish Year</label>
+        <div className='my-4'>
+          <label className='text-xl mr-4 text-gray-500'>Note</label>
           <input
-            type='number'
-            value={publishYear}
-            onChange={(e) => setPublishYear(e.target.value)}
+            type='text'
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2  w-full '
           />
-        </div> */}
+        </div>
+        <div className='my-4'>
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Set Status</span>
+          </div>
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            placeholder={status}
+            className='select select-info w-full max-w-xs '
+          >
+          <option disabled defaultValue>Set Status</option>
+          <option value='Pending'>Pending</option>
+          <option value='Attempted'>Attempted</option>
+          <option value='Done'>Solved/Done</option>
+          <option value='Revisit'>Revisit</option>
+          </select>
+        </label>
+        </div>
         <button className='btn glass' onClick={handleSaveTask}>
           ADD
         </button>

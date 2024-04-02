@@ -12,7 +12,7 @@ import Leaderboard from './pages/leaderboard.jsx'
 import ProtectedRoutes from './pages/ProtectedRoutes.jsx'
 import Profile from './pages/Profile.jsx'
 import Practice from './pages/Practice.jsx'
-
+import Resources from './pages/Resources.jsx'
 const App = () => {
   return (
     // <ProtectedRoutes>
@@ -29,7 +29,8 @@ const App = () => {
           <Route path='/tasks/get-task/:id' element={<ShowTask/>}/>
           <Route path='/tasks/update-task/:id' element={<UpdateTask/>}/>
           <Route path='/tasks/delete-task/:task' element={<DeleteTask/>}/>
-          <Route path='/practice' element={<Practice/>}/>
+          <Route path='/tasks/practice' element={<Practice/>}/>
+          <Route path='/tasks/resources' element={<Resources/>}/>
         {/* </Route> */}
         
       </Routes>

@@ -10,11 +10,17 @@ import  {useAuth} from '../structure/GlobalStateProvider.jsx'
 
 const UpdateTask = ({task}) => {
   const {id} = task.uid;
-  var [taskName, setName] = useState('');
-  var [taskURL, setURL] = useState('');
-  var [status, setStatus] = useState('');
-  var [note, setNote] = useState('');
-  var [loading, setLoading] = useState(false);
+  const [taskName, setName] = useState('');
+  const [taskURL, setURL] = useState('');
+  const [status, setStatus] = useState('');
+  const [note, setNote] = useState('');
+  const [legacyTask, setTaskL] = useState({
+    'taskURL': '',
+    'taskName': '',
+    'note': '',
+    'status': ''
+  });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { authState, setAuthState } = useAuth();
@@ -29,8 +35,14 @@ const UpdateTask = ({task}) => {
         setURL(response.data.taskURL)
         setStatus(response.data.status)
         setName(response.data.taskName)
-        setNote(response.data.Note)
+        setNote(response.data.note)
         setLoading(false);
+        setTaskL({
+          'taskURL': response.data.taskURL,
+          'taskName': response.data.taskName,
+          'note': response.data.note,
+          'status': response.data.status
+        })
       }).catch((error) => {
         setLoading(false);
         alert('An error happened. Please Chack console');
@@ -40,12 +52,13 @@ const UpdateTask = ({task}) => {
   
   
   const handleUpdateTask = () => {
+    console.log(taskURL?taskURL: legacyTask.taskURL);
     const data = {
-      uid:task.uid,
-      taskName:taskName,
-      taskURL:taskURL,
-      status:status,
-      note:note
+      uid:id,
+      taskName:(taskName==='')?legacyTask.taskName:taskName,
+      taskURL:(taskURL==='')?legacyTask.taskURL:taskURL,
+      status:(status==='')? legacyTask.status:status,
+      note:(note==='')?legacyTask.note:note
     };
     setLoading(true);
     axios
@@ -64,40 +77,68 @@ const UpdateTask = ({task}) => {
   };
 
   return (
-    <div className='p-4'>
-      <BackButton />
-      <h1 className='text-3xl my-4'>Update Task</h1>
-      {loading ? <Spinner /> : ''}
-      <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Task Name</label>
-          <input
-            type='text'
-            placeholder={task.taskName}
-            value={taskName}
-            onChange={(e) => setName(e.target.value)}
-            className='border-2 border-gray-500 px-4 py-2 w-full'
-          />
+    <div className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center'>
+    <div
+      className='fixed bg-black bg-opacity-60 top-0 left-0 right-0 bottom-0 z-50 flex justify-center items-center w-9/12 h-4/5'
+      onClick={()=>{navigate('/tasks/all-tasks')}}
+      // style={{ maxHeight: '60vh' }} // Limiting the height to 80% of the viewport height
+    >
+      <div
+        onClick={() => {navigate('/tasks/all-tasks')}}
+        className='w-[600px] max-w-full h-[500px] bg-white rounded-xl p-2 flex flex-col relative'
+      >
+        <AiOutlineClose
+          className='absolute right-6 top-6 text-3xl text-red-600 cursor-pointer'
+          onClick={onClose}
+        />
+        <div className='flex items-center justify-start'>
+        <button className='btn glass btn-primary bg-blue-400' onClick={handleUpdateTask}>
+          Save
+        </button>
+        {/* <div className='pl-20 '><p >If facing error:</p>
+          <Link to={{
+              pathname: `/tasks/update-task/${task.uid}`,
+              state: { task: task }}}
+              className="text-xl text-blue-600">
+              <AiOutlineEdit className='text-2xl text-blue-600' />
+              Update Menu
+          </Link>
+        </div> */}
+        
         </div>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Task URL</label>
-          <input
+        <div className='flex justify-start items-center gap-x-2'>
+          <PiBookOpenTextLight className='text-blue-500 text-2xl' />
+          <h2 className='my-1'>Update Task Name</h2>
+          <p className='ml-auto'>from: {task.taskName}</p>
+        </div>
+        <input
             type='text'
-            placeholder={task.taskURL}
+            value={taskName}
+            placeholder={taskName}
+            onChange={(e) => setName(e.target.value)}
+            className='border-2 rounded-lg border-gray-500 px-4 py-2 w-full'
+          />
+        <div className='flex justify-start items-center gap-x-2'>
+          <BiUserCircle className='text-blue-500 text-2xl' />
+          <h2 className='my-1'>Update Task URL</h2>
+          <p className='ml-auto'>from: {task.taskURL}</p>
+        </div>
+        <input
+            type='text'
             value={taskURL}
+            placeholder={taskURL}
             onChange={(e) => setURL(e.target.value)}
             className='border-2 border-gray-500 px-4 py-2  w-full '
           />
-        </div>
-        <div className='my-4'>
         <label className="form-control w-full max-w-xs">
           <div className="label">
             <span className="label-text">Set Status</span>
+
+            {/* <span className="label-text-alt">from: {status}</span> */}
           </div>
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            placeholder={task.status}
             className='select select-info w-full max-w-xs '
           >
           <option disabled defaultValue>Set Status</option>
@@ -107,22 +148,20 @@ const UpdateTask = ({task}) => {
           <option value='Revisit'>Revisit</option>
           </select>
         </label>
+        <div className='my-2'>
+        <p className='mt-4 '>Update notes</p>
+          
         </div>
-        <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Note</label>
-          <input
+        <input
             type='text'
-            placeholder={task.note}
             value={note}
             onChange={(e) => setNote(e.target.value)}
-            className='border-8 border-gray-500 px-4 py-2  w-full '
+            className='border-2 border-gray-500 px-4 py-2  w-full h-modal'
           />
-        </div>
-        <button className='p-2 bg-sky-300 m-8' onClick={handleUpdateTask}>
-          Save
-        </button>
       </div>
     </div>
+    </div>
+
   )
 }
 

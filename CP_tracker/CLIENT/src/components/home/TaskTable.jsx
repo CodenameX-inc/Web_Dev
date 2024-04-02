@@ -13,15 +13,15 @@ import  {useAuth} from '../../structure/GlobalStateProvider'
 const TaskTable = ({ tasks }) => {
   const [selectedTask, setSelectedTask] = useState(null);
   const { authState, setAuthState } = useAuth();
-  useEffect(()=>{
-        // let token = (cookies.get('TOKEN'));
-        if(!authState.isAuthenticated)
-        {
-          alert("User token not verified or not logged in... Retrying..");
-          navigate("/login");
-        }
+  // useEffect(()=>{
+  //       // let token = (cookies.get('TOKEN'));
+  //       if(!authState.isAuthenticated)
+  //       {
+  //         alert("User token not verified or not logged in... Retrying..");
+  //         navigate("/login");
+  //       }
         
-      },[]);
+  //     },[]);
   
   return (
     <div>
