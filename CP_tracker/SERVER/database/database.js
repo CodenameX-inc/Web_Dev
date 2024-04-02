@@ -164,13 +164,15 @@ export async function addTask(tasks, userID)
     if(!tasks.platform) platform="OJ";
     try{
     db = await connection();
-    const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL", "userID") VALUES (:val1, :val2, :val3, :val4)';
+    const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL", "note", "status", "userID") VALUES (:val1, :val2, :val3, :val4, :val5, :val6)';
     const result = await db.execute(sql, 
     {
         val1:tasks.platform, 
         val2:tasks.taskName, 
         val3:tasks.taskURL,
-        val4:userID
+        val4:tasks.note,
+        val5:tasks.status,
+        val5:userID
     });
     db.commit();
     console.log("Inserted data: \n" + result.rowsAffected);

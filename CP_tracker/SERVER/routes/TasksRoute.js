@@ -151,6 +151,8 @@ router.post('/add-task', async (req,res)=>
       var taskName = req.body.taskName;
       var taskURL = req.body.taskURL;
       var platform = req.body.platform;
+      var note = req.body.note;
+      var status = req.body.status;
     //TODO: implement function in Database to get Task name from Codeforces/OJ API
     if(!taskName || !taskURL) {
       // errMsg["message"]=
@@ -167,6 +169,8 @@ router.post('/add-task', async (req,res)=>
       taskName: taskName,
       taskURL: taskURL,
       platform: platform,
+      status: status,
+      note:note
     }
     
     console.log("data inserted: \n"+data.platform);
@@ -238,6 +242,7 @@ router.put('/update-task/:uid',async (req,res)=>{
 router.delete('/delete-task/:uid', async (req, res)=>{
   
   let token = req.headers.authorization;
+  const uid = req.params.uid;
   jwt.verify(token, "RANDOM-TOKEN", async (err, decode)=> {
     if(err){
       return res.status(401).send({
@@ -246,7 +251,7 @@ router.delete('/delete-task/:uid', async (req, res)=>{
       })
     }
     try{
-      const uid = req.params.uid;
+      console.log("The task id: ",uid);
       var msg = await deleteTask(uid, decode.USERID);
       if(Object.keys(msg)[0]==='error'){
         return res.status(500).send(msg);
