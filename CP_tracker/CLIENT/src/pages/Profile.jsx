@@ -60,10 +60,11 @@ const Profile = () => {
         // var tot=0;
         newInfo["TOTAL"]=taskinfo.length;
          taskinfo.map((item)=>{
-          const key = item.status.toUpperCase();
-          newInfo[key] += 1;
-          // tot++;
-          if(key === "SOLVED/DONE") newInfo["DONE"] += 1;
+          if(item.status){const key = item.status.toUpperCase();
+            newInfo[key] += 1;
+            // tot++;
+            if(key === "SOLVED/DONE") newInfo["DONE"] += 1;  
+          }
             /*switch(item.status){
               case "Done":{
                 info[key] += 1;

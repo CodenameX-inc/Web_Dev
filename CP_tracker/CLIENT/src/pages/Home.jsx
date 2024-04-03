@@ -39,7 +39,7 @@ const Home = () => {
     }, [authState.token]);
   
     return (
-      <div className='p-4 h-screen max-w-screen'>
+      <div className='p-4 h-screen w-screen overflow-auto'>
         <div className='flex justify-center items-center gap-x-4'>
           <button
             className='btn glass btn-primary bg-blue-500'
@@ -56,9 +56,10 @@ const Home = () => {
           
         </div>
         <div className='flex justify-between items-center'>
-          <h1 className='text-3xl my-8'>Add Problems/Tasks</h1>
+          <h1 className='text-3xl my-8'>All Problems/Tasks</h1>
           <Link to={`/tasks/create-task`}>
-            <MdOutlineAddBox className='text-sky-800 text-4xl' />
+            
+            <button className="btn glass btn-primary bg-green-400"><MdOutlineAddBox className='text-sky-800 text-4xl' />Add task</button>
           </Link>
         </div>
         {loading ? (

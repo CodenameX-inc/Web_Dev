@@ -191,13 +191,12 @@ const Signup = () => {
               </Button>
             </div>
             <div className="flex flex-col space-y-5">
-              <span className="flex items-center justify-center space-x-2">
+              {/* <span className="flex items-center justify-center space-x-2">
                 <span className="h-px w-14 bg-gray-400"></span>
                 <span className="font-normal text-gray-500">or login with</span>
                 <span className="h-px w-14 bg-gray-400"></span>
-              </span>
-              <div className="flex flex-col space-y-4">
-                {/* Github */}
+              </span> */}
+              {/* <div className="flex flex-col space-y-4">
                 <a
                   href="#"
                   className="group flex items-center justify-center space-x-2 rounded-md border border-gray-800 px-4 py-2 transition-colors duration-300 hover:bg-gray-800 focus:outline-none"
@@ -238,7 +237,7 @@ const Signup = () => {
                     Google
                   </span>
                 </a>
-              </div>
+              </div> */}
             </div>
           </form>
         </div>

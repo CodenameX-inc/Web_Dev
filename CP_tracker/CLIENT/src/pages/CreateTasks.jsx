@@ -19,9 +19,36 @@ const CreateTasks = () => {
   const navigate = useNavigate();
   const { enqueueSnackbar } = useSnackbar();
   const { authState, setAuthState } = useAuth();
+  
+  const isValidUrl = urlString=> {
+    try { 
+      return Boolean(new URL(urlString)); 
+    }
+    catch(e){ 
+      return false; 
+    }
+}
 
-
+function addProtocol() {
+  // Check if the URL starts with "http://" or "https://"
+  if (!taskURL.startsWith("http://") && !taskURL.startsWith("https://")) {
+    // If not, add "https://" to the beginning of the URL
+    setURL("https://" + taskURL);
+  }
+  // return url;
+}
   const handleSaveTask = async () => {
+    if(!authState.isAuthenticated) {
+      enqueueSnackbar("Login first", { variant: "error" });
+      navigate('/login')
+      return;
+    }      
+    enqueueSnackbar("Inserting data", { variant: "default" });
+    setLoading(true);
+    addProtocol();
+    // if(!isValidUrl(taskURL)){
+    //   enqueueSnackbar("INVALID URL (enter valid one)", { variant: "error" });
+    // }
     const data = {
       taskName: taskName,
       taskURL: taskURL,
@@ -29,7 +56,7 @@ const CreateTasks = () => {
       status: status
       // publishYear,
     };
-    setLoading(true);
+    console.log("from client: task to be inserted: ", data)
     axios
       .post(`http://localhost:${PORT}/tasks/add-task`, data,{
         headers: {'Authorization':authState.token}
@@ -55,7 +82,7 @@ const CreateTasks = () => {
       <h1 className='text-3xl my-4'>Create Task</h1>
       {loading ? <Spinner /> : ''}
       <div className='flex flex-col border-2 border-sky-400 rounded-xl w-[600px] p-4 mx-auto'>
-        <div className='my-4'>
+        <div className='my-2'>
           <label className='text-xl mr-4 text-gray-500'>Task Name</label>
           <input
             type='text'
@@ -66,9 +93,9 @@ const CreateTasks = () => {
           />
         </div>
         <div className='my-4'>
-          <label className='text-xl mr-4 text-gray-500'>Task URL</label>
+          <label htmlFor='url' className='text-xl mr-4 text-gray-500'>Task URL</label>
           <input
-            type='text'
+            type='url'
             value={taskURL}
             placeholder={taskURL}
             onChange={(e) => setURL(e.target.value)}

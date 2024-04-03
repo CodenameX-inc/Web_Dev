@@ -140,13 +140,13 @@ function PracticeIcon(){
            
           {/* <button className="lg:hidden"> */}
            
-            <Dropdown placement="bottom" >
+            <Dropdown className="text-black">
             {/* <MenuIcon className="h-6 w-6" /> */}
               {nv.map((item, index) => (
                 <Dropdown.Item key={index}>
                   {
                     (authState.isAuthenticated)?
-                    <Link to={item[1]} className={`${style} bg-blue-100`}>{item[0]}</Link>
+                    <Link to={item[1]} className={`flex items-center text-sm font-medium transition-colors text-gray-900 hover:text-gray-900`}>{item[0]}</Link>
                     : <Link key={index} to={"/login"} className="flex items-center text-sm font-medium transition-colors text-grey-400 hover:text-black-100"></Link>
                   }
                   
