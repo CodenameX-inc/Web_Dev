@@ -136,6 +136,7 @@ router.get('/profile', async(req,res)=>{
 })
 router.post('/add-task', async (req,res)=>
 {
+  console.log("Create task req received, processing", JSON.stringify(req.body))
   // res.setHeader('Content-Type', 'application/json');
   let token = req.headers.authorization;
   jwt.verify(token, "RANDOM-TOKEN", async (err, decode)=> {
@@ -173,7 +174,7 @@ router.post('/add-task', async (req,res)=>
       note:note
     }
     
-    console.log("data inserted: \n"+data.platform);
+    // console.log("data inserted: \n"+data);
     var msg = await addTask(data, decode.USERID); //send to DB to add data 
     
     if(msg===500){

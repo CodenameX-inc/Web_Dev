@@ -160,6 +160,7 @@ export async function getTaskByID(taskID, userID) {
 
 export async function addTask(tasks, userID)
 {
+    console.log("DB: processing create task: "+JSON.stringify(tasks)+ " user"+userID);
     var db=null;
     if(!tasks.platform) platform="OJ";
     try{
@@ -167,12 +168,12 @@ export async function addTask(tasks, userID)
     const sql = 'INSERT INTO TaskList ("platform", "taskName", "taskURL", "note", "status", "userID") VALUES (:val1, :val2, :val3, :val4, :val5, :val6)';
     const result = await db.execute(sql, 
     {
-        val1:tasks.platform, 
-        val2:tasks.taskName, 
-        val3:tasks.taskURL,
-        val4:tasks.note,
-        val5:tasks.status,
-        val5:userID
+        val1: tasks.platform, 
+        val2: tasks.taskName, 
+        val3: tasks.taskURL,
+        val4: tasks.note,
+        val5: tasks.status,
+        val6: userID   
     });
     db.commit();
     console.log("Inserted data: \n" + result.rowsAffected);
