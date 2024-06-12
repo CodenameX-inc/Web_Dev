@@ -1,0 +1,128 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: "Setup docker registry on an OpenBSD server (standalone)"
+  hosts: all
+  become_method: doas
+  gather_facts: no
+  vars_prompt:
+    - name: "registry_user"
+      prompt: "1/5. User to run the registry as?"
+      default: "registry"
+      private: no
+    - name: "registry_home"
+      prompt: "2/5. Home folder for registry user?"
+      default: "/home/registry"
+      private: no
+    - name: "registry_storage"
+      prompt: "3/5. Storage location for registry images?"
+      default: "/home/registry/storage"
+      private: no
+    - name: "registry_bind_ip"
+      prompt: "4/5. Registry bind IP?"
+      default: "0.0.0.0"
+      private: no
+    - name: "registry_bind_port"
+      prompt: "5/5. Registry bind port?"
+      default: "5000"
+      private: no
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python3
+    registry:
+      user: "{{registry_user}}"
+      home: "{{registry_home}}"
+      storage: "{{registry_storage}}"
+      ip: "{{registry_bind_ip}}"
+      port: "{{registry_bind_port}}"
+    users:
+      - { name: "{{registry_user}}", comment: "Docker Registry User", uid: 3750, password: '*' }
+    rcctl:
+      - { name: 'supervisord', state: "enable" }
+    packages:
+    - ansible
+    - go
+    - supervisor
+    - py3-setuptools
+    - git
+    - rsync--
+
+  tasks:
+  - name: Install packages
+    raw: pkg_add {{item}}
+    with_items: "{{packages}}"
+
+  - name: Add users
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+    tags: create_users
+
+  - name: Clean registry distribution
+    command: rm -rf distribution
+
+  - name: Get registry distribution
+    command: git clone https://github.com/distribution/distribution.git
+    environment:
+      GOPATH: "{{registry.home}}/go"
+
+  - name: Build registry
+    command: go build main.go
+    args:
+      chdir: /root/distribution/cmd/registry
+      creates: /root/distribution/cmd/registry/main
+    environment:
+      GOPATH: "{{registry.home}}/go"
+
+  - name: Install registry binary
+    command: install -o root /root/distribution/cmd/registry/main /usr/local/sbin/registry
+    args:
+      creates: /usr/local/sbin/registry
+
+  - name: Prepare registry folder
+    command: mkdir -p {{registry.storage}}
+
+  - name: Create /etc/rc.d/docker_registry
+    template:
+      src: "{{playbook_dir}}/../files/docker_registry.rc.j2"
+      dest: "/etc/rc.d/docker_registry"
+      mode: "0555"
+
+  - name: Create /etc/docker-registry.yml
+    template:
+      src: "{{playbook_dir}}/../files/docker-registry.yml.j2"
+      dest: "/etc/docker-registry.yml"
+
+  - name: Change ownerships
+    command: chown -R {{registry.user}}:{{registry.user}} {{registry.home}}/go {{registry.storage}}
+
+  - name: Configure supervisor registry service
+    community.general.ini_file:
+      path: /etc/supervisord.d/registry.ini
+      section: "program:registry"
+      option: "{{item.key}}"
+      value:  "{{item.value}}"
+      mode: '0600'
+      backup: false
+    with_dict:
+      user: registry
+      directory: /home/registry
+      command: /usr/local/sbin/registry serve /etc/docker-registry.yml
+      stdout_logfile: /var/log/registry.log
+      stdout_logfile_maxbytes: 0
+      stderr_logfile: /var/log/registry.log
+      stderr_logfile_maxbytes: 0
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+
+#  - set_fact:
+#      post_install: |
+#        Dont forget:
+#          - Registry is public
+#
+#  - debug: msg={{ post_install.split('\n') }

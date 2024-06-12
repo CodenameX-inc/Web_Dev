@@ -1,0 +1,406 @@
+#!/usr/bin/env ansible-playbook
+---
+- name: Setup an OpenBSD to act as a database server for echoCTF.RED
+  hosts: all
+  gather_facts: false
+  vars_prompt:
+    - name: "myname"
+      prompt: "1/7. What is the desired hostname?"
+      default: "db.example.com"
+      private: no
+    - name: "interconnect_interface"
+      prompt: "2/7. What is the interconnect interface?"
+      default: "em1"
+      private: no
+    - name: "db_ip"
+      prompt: "3/7. What is the IP mysql should bind to?"
+      default: "10.7.0.253"
+      private: no
+    - name: "pui_ip"
+      prompt: "4/7. What is the internal participantUI IP?"
+      default: "10.7.0.200"
+      private: no
+    - name: "mui_ip"
+      prompt: "5/7. What is the internal moderatorUI IP?"
+      default: "10.7.0.201"
+      private: no
+    - name: "vpn_ip"
+      prompt: "6/7. What is the internal VPN IP?"
+      default: "10.7.0.254"
+      private: no
+#    - name: "GITHUB_REPO"
+#      prompt: "7/7. Provide a github repo to clone?"
+#      default: "{{ lookup('pipe', 'git remote get-url origin') }}"
+#      private: no
+  vars:
+    mysql_users:
+      - { name: participantUI, password: 'participantUI', host: '{{pui_ip}}' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '{{mui_ip}}' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '{{vpn_ip}}' }
+      - { name: vpnuser, password: 'vpnuserpass', host: '{{vpn_ip}}' }
+      - { name: participantUI, password: 'participantUI', host: 'localhost' }
+      - { name: moderatorUI, password: 'moderatorUI', host: 'localhost' }
+      - { name: participantUI, password: 'participantUI', host: '127.0.0.1' }
+      - { name: moderatorUI, password: 'moderatorUI', host: '127.0.0.1' }
+# add your github username to fetch your public keys
+#    sshkeys:
+#      - octoprint
+    users:
+      - { name: sysadmin, comment: "CTF Admin", uid: 375, password: '*' }
+    ansible_python_interpreter: /usr/local/bin/python3
+    ansible_user: root
+    versions:
+      AUTOCONF: 2.69
+      AUTOCONFP: p2
+      AUTOMAKE: 1.16.2
+      AUTOMAKEP: ""
+      memcached: 1.5.18
+      libc: 96.0
+      libutil: 15.0
+      libcrypto: 46.1
+      ICU_MAJOR: 67
+      ICU_MINOR: 1
+    sysctl:
+      kern.bufcachepercent: 30
+      net.inet.ip.maxqueue: 2048
+      kern.somaxconn: 4096
+      net.bpf.bufsize: 2097152
+      net.bpf.maxbufsize: 4194304
+      kern.seminfo.semmni: 1024
+      kern.seminfo.semmns: 4096
+      kern.shminfo.shmmax: 67018864
+      kern.shminfo.shmall: 32768
+      kern.maxfiles: 312180
+    rcctl:
+      - { name: check_quotas, state: "disable" }
+      - { name: cron, state: "enable" }
+      - { name: resolved, state: "disable" }
+      #- { name: dhcpleased, state: "disable" }
+      - { name: ntpd, state: "enable" }
+      - { name: pflogd, state: "disable" }
+      - { name: slaacd, state: "disable" }
+      - { name: smtpd, state: "disable" }
+      - { name: sndiod, state: "disable" }
+      - { name: memcached, state: "enable" }
+      - { name: mysqld, state: "enable" }
+    packages:
+      - curl
+      - git
+      - rsync--
+      - mariadb-server
+      - memcached--
+      - libmemcached
+      - py3-mysqlclient
+      - libtool
+      - autoconf%2.69
+      - automake%1.16
+    my_cnf:
+      - { init_file:  "/etc/mysql-init.sql"}
+      - { bind-address:  "{{db_ip}}" }
+      - { character-set-server: utf8mb4 }
+      - { collation-server: utf8mb4_unicode_ci }
+      - { default-storage-engine: innodb }
+      - { default-time-zone: "'+00:00'" }
+      - { event_scheduler: "ON" }
+      - { skip-character-set-client-handshake: 1 }
+      - { skip-external-locking: 1 }
+      - { skip-name-resolve: 1 }
+      - { plugin_load_add: "ha_federatedx" }
+      - { plugin_load: "ha_blackhole" }
+      - { blackhole: "FORCE" }
+
+  tasks:
+  - name: Sync date time
+    raw: rdate pool.ntp.org
+
+  - name: Install ansible (raw)
+    raw: pkg_add ansible py3-mysqlclient
+
+  - name: Gather facts
+    setup:
+
+  - name: Set hostname
+    hostname:
+      name: "{{myname}}"
+
+  - name: Make hostname permanent (/etc/myname)
+    copy:
+      content: "{{ myname }}\n"
+      dest: /etc/myname
+
+  - name: Copy events checker
+    template:
+      src: "{{playbook_dir}}/../../contrib/mysql-events-checker.sh"
+      mode: 0555
+      dest: /usr/local/sbin/mysql-events-checker
+
+  - name: Create fresh /etc/hosts
+    copy:
+      content: "127.0.0.1 localhost\n{{db_ip}} {{  myname.split('.')[0] | lower }} {{ myname }}\n"
+      dest: /etc/hosts
+
+  - name: Configure interconnect interface for db server
+    lineinfile:
+      path: "/etc/hostname.{{interconnect_interface}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "{{item}}"
+      create: yes
+    with_items:
+      - "inet {{db_ip}} 255.255.255.0 NONE group interconnect"
+      - "up -inet6"
+
+  - name: Bring interface up
+    command: sh /etc/netstart {{interconnect_interface}}
+
+
+  - name: Set APP_DIR to /root/sources on non local connection
+    when: ansible_connection != 'local'
+    set_fact:
+      APP_DIR: /root/sources
+
+  - name: Set APP_DIR to {{playbook_dir}}/../../
+    when: ansible_connection == 'local'
+    set_fact:
+      APP_DIR: "{{playbook_dir}}/../../"
+
+
+  - name: Install packages
+    shell: "pkg_add {{packages|join(' ')}}"
+
+  - name: Add user 'sysadmin'
+    user:
+      name: "{{item.name}}"
+      comment: "{{item.comment}}"
+      uid: "{{item.uid}}"
+      password: '{{item.password}}'
+    with_items: "{{users}}"
+
+  - name: Allow sysadmin to execute 'doas'
+    lineinfile:
+      path: /etc/doas.conf
+      owner: root
+      group: wheel
+      mode: '0640'
+      regexp: '^permit nopass keepenv sysadmin as root'
+      line: 'permit nopass keepenv sysadmin as root'
+      create: yes
+
+  - name: Configure PS1 for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export PS1='\\u@\\H:\\w\\$ '"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTFILE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTFILE=~/.sh_history"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Configure HISTSIZE for root and skeleton
+    lineinfile:
+      path: "{{item}}"
+      owner: root
+      group: wheel
+      mode: '0640'
+      line: "export HISTSIZE=10000"
+    with_items:
+      - '/etc/skel/.profile'
+      - '/root/.profile'
+
+  - name: Set authorized keys for root
+    when: sshkeys is defined
+    authorized_key:
+      user: root
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Set authorized keys for sysadmin
+    when: sshkeys is defined
+    authorized_key:
+      user: sysadmin
+      state: present
+      key: "https://github.com/{{item}}.keys"
+    with_items: "{{sshkeys}}"
+
+  - name: Configure default services
+    command: "rcctl {{item.state}} {{item.name}}"
+    when: item.state is defined
+    with_items: "{{rcctl}}"
+
+  - name: Clone sources repo
+    when: ansible_connection != 'local' and GITHUB_REPO is defined
+    git:
+      repo: "{{GITHUB_REPO}}"
+      dest: "{{APP_DIR}}"
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Check if /var/mysql exists
+    stat:
+      path: /var/mysql
+    register: stat_result
+
+  - name: execute mysql_install_db if /var/mysql do not exist
+    command: mysql_install_db
+    when: stat_result.stat.exists == False
+
+  - name: start mysqld
+    command: rcctl start mysqld
+
+  - name: Create mysql database
+    mysql_db:
+      state: present
+      name: echoCTF
+      collation: utf8mb4_unicode_ci
+      encoding: utf8mb4
+      login_user: "root"
+
+#  - name: Clone global variables UDF repo
+#    git:
+#      repo: 'https://github.com/echoCTF/MySQL-global-user-variables-UDF.git'
+#      dest: /root/global_variables_udf
+#      accept_hostkey: yes
+#      clone: yes
+#      force: yes
+#      depth: 1
+
+#  - name: Make all install on global_variables_udf
+#    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make DESTDIR=/usr/local/lib/mysql/plugin all install
+#    args:
+#      chdir: /root/global_variables_udf
+
+  - name: Clone memcached_functions_mysql repo
+    git:
+      repo: 'https://github.com/echoCTF/memcached_functions_mysql.git'
+      dest: /root/memcached_functions_mysql
+      accept_hostkey: yes
+      clone: yes
+      force: yes
+      depth: 1
+
+  - name: Bootstrap /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./config/bootstrap
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Configure /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 ./configure --with-mysql=/usr/local/bin/mysql_config --libdir=/usr/local/lib/mysql/plugin --with-libmemcached=/usr/local
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Make all install /root/memcached_functions_mysql
+    shell: AUTOCONF_VERSION="{{versions.AUTOCONF}}" AUTOMAKE_VERSION=1.16 make all install
+    args:
+      chdir: /root/memcached_functions_mysql
+
+  - name: Load TZ data
+    shell: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql mysql
+
+  - name: Import mysql schema
+    mysql_db:
+      state: import
+      name: echoCTF
+      target: "{{APP_DIR}}/schemas/{{item}}"
+      login_unix_socket: /var/run/mysql/mysql.sock
+      login_user: "root"
+    with_items:
+      - ../../memcached_functions_mysql/sql/install_functions.sql
+      - echoCTF.sql
+      - echoCTF-routines.sql
+      - echoCTF-triggers.sql
+      - echoCTF-events.sql
+
+  - name: create echoCTF users for mysql
+    mysql_user:
+      name: "{{item.name}}"
+      password: "{{item.password}}"
+      host: "{{item.host}}"
+      priv: '*.*:ALL'
+      state: present
+    with_items: "{{mysql_users}}"
+    tags:
+      - create_users
+
+  - name: Copy mysql-init.sql for populating memcached at boot
+    copy:
+      content: "CALL echoCTF.init_mysql();"
+      dest: "/etc/mysql-init.sql"
+
+  - name: "Configuring my.cnf"
+    ini_file:
+      dest: "/etc/my.cnf"
+      section: "mysqld"
+      option: "{{item.key}}"
+      value: "{{item.value}}"
+    with_dict: "{{my_cnf}}"
+    tags:
+      - set_ini
+
+  - name: configure participant rc.d
+    command: rcctl {{item}}
+    with_items:
+      - set memcached flags -u _memcached -l {{db_ip}} -l 127.0.0.1 -m 1024 -c 181920
+    tags:
+      - rcctl
+
+  - name: start memcached
+    command: rcctl start memcached
+
+  - name: restart mysqld
+    command: rcctl restart mysqld
+
+  - name: copy nstables script
+    copy:
+      src: ../files/nstables.sh
+      dest: /usr/local/sbin/nstables
+      owner: root
+      group: wheel
+      mode: '0555'
+
+  - name: Setting up sysctl.conf
+    sysctl:
+      name: "{{ item.key }}"
+      value: "{{ item.value }}"
+    with_dict: "{{ sysctl }}"
+
+  - name: Execute fw_update
+    command: fw_update -a
+
+  - name: Execute syspatch
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Re-Execute syspatch in case it updated it self on the previous run
+    command: syspatch
+    failed_when: result.rc not in [0,2]
+    register: result
+
+  - name: Install cron entries
+    cron:
+      name: "{{item.name}}"
+      user: "root"
+      minute: "{{item.minute | default(omit)}}"
+      special_time: "{{item.special_time|default(omit)}}"
+      job: "{{item.job}}"
+    with_items:
+      - { name: "events checker", minute: "*/1",  job: "/usr/local/sbin/mysql-events-checker" }
+
+  - name: display post install message
+    debug: msg="Reboot the system for the changes to take effect"

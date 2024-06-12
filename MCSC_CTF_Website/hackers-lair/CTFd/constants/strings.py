@@ -1,0 +1,1 @@
+description = "The CTF platform of MCSC!"

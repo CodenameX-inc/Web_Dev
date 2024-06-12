@@ -1,0 +1,6 @@
+auto {{network.driver_options.parent}}
+iface {{network.driver_options.parent}} inet static
+        address {{ipv4}}/16
+        gateway {{network.ipam_options[0].gateway}}
+        up ip link set {{network.driver_options.parent}} promisc on
+        mtu 1450

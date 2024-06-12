@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block extend_title %}
+  | {{object.contest.title}}
+{% endblock %}
+
+{% block title %}: {{ object.title }}{% endblock %}
+
+{% block content %}
+    <div class="challenge-details col-md-offset-1 col-md-10">
+        <div class="challenge-main-title">{{ object.title }}</div>
+
+        <div class="challenge-subtitle">{{ object.points }} Points ● {{ object.category }}</div>
+        {% if object.author and object.author_link %}
+                <div class="challenge-subtitle">By: <a href="{{ object.author_link }}"> {{ object.author }}</a></div>
+        {% elif object.author and not object.author_link %}
+                <div class="challenge-subtitle">By: {{ object.author }}</div>
+        {% endif %}
+
+        <hr class="menu-divider"> </hr>
+
+        <div class="challenge-text">{{ object.description|linebreaks }}</div>
+
+        {% if files %}
+            <div class="file-downloads">
+            {% for file in files %}
+            <a href="{{ file.fileObject.url }}"> 
+                <span class="glyphicon glyphicon-download"></span>
+                {{ file }}
+            </a>
+            {% endfor %}
+            </div>
+        {% endif %}
+
+        <hr class="menu-divider"> </hr>
+
+        <div class="challenge-submission">
+            {% if not solved %}
+                <form class="input-flag" action="" method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input class="input-flag-button" type="submit" value="Submit flag.">
+                </form>
+            {% else %}
+                <p>You have solved this challenge.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        {% if messages %}
+            {% for message in messages %}
+                $(document).ready(function () {
+                    $.notifyBar({cssClass:"{{ message.tags }}", html: "{{ message }}" });
+                });
+            {% endfor %}
+        {% endif %}
+    </script>
+
+{% endblock %}

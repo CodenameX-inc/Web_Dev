@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "esm": "^3.2.25",
+    "next": "^14.2.3",
     "three": "^0.162.0"
   },
   "devDependencies": {

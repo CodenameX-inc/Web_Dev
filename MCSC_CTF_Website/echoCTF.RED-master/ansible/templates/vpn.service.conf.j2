@@ -1,0 +1,49 @@
+# Allow moderators to access the service even when in maintenance
+pass quick on egress inet proto udp from <moderators> to (egress:0) port 1194 label "OpenVPN"
+pass quick on egress inet proto tcp from <moderators> to (egress:0) port 443 label "OpenVPN443"
+
+# Dont allow
+pass quick on egress inet proto udp from !<maintenance> to (egress:0) port 1194 label "OpenVPN"
+pass quick on egress inet proto tcp from !<maintenance> to (egress:0) port 443 label "OpenVPN443"
+
+
+
+anchor "targets/*"
+anchor "targets" on targets {
+  # allow registry clients to have access to the internet
+  pass quick inet from <registry_clients> to !(self)
+  # allow targets to query the dns server on the targets interface
+  pass quick inet proto {tcp, udp} from <targets> to (targets:0) port 53
+  # allow registry_clients to query the dns server on the targets interface
+  pass quick inet proto {tcp, udp} from <registry_clients> to (targets:0) port 53
+  # allow registry_clients to contact private registries
+  pass quick inet proto tcp from <registry_clients> to <registry_servers> port 5000
+  # allow targets to communicate with offense_activated network
+  pass from <targets> to <offense_activated>
+}
+#load anchor "targets" from "/etc/targets_anchor.conf"
+
+
+anchor "offense/*"
+anchor "offense" on tun {
+	anchor "findings"
+	anchor "allowed" from <offense_network> to (offense) {
+		# allow ping on connected players interface for troubleshooting
+		pass in on tun inet proto icmp from <offense_network> to (offense)
+	}
+  # block targets from connecting to the VPN interface
+	block quick from <targets> to 10.10.0.1
+  # Allow targets to connect back to offense activated
+	pass from <targets> to <offense_activated>
+  match log (to pflog2) inet from <offense_activated> to <heartbeat>
+}
+#load anchor "offense" from "/etc/offense_anchor.conf"
+anchor "networks"
+load anchor "networks" from "/etc/targets_networks.conf"
+load anchor "offense/findings" from "/etc/match-findings-pf.conf"
+
+pass quick inet to <targets> tagged OFFENSE_REGISTERED allow-opts received-on tun keep state (max 100000, source-track rule, max-src-states 2000, max-src-conn 10)
+
+pass quick inet proto tcp from <docker_clients> to <docker_servers> port {2376}
+
+pass quick on interconnect from (interconnect:network) label "interconnect"

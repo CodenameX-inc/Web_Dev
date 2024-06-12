@@ -1,0 +1,383 @@
+user {{item.user}};
+worker_processes 5;
+worker_rlimit_nofile 1024;
+error_log syslog:server=unix:/dev/log,severity=notice;
+pid logs/{{item.domain}}-nginx.pid;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    include               mime.types;
+    default_type          application/octet-stream;
+    index                 /index.php;
+    log_format  main  '$remote_addr "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    client_body_temp_path /cache/client_body_temp 1 2;
+    scgi_temp_path /cache/scgi_temp 1 2;
+    uwsgi_temp_path /cache/uwsgi_temp 1 2;
+    fastcgi_temp_path /cache/fastcgi_temp 1 2;
+    proxy_temp_path /cache/proxy_temp 1 2;
+
+    limit_req_zone $binary_remote_addr zone=Api:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=ResendVerificationEmail:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=RequestPasswordReset:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Register:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Login:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=Claim:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=ResetPassword:1m rate=10r/s;
+    limit_req_zone $binary_remote_addr zone=VerifyEmail:10m rate=10r/s;
+
+    access_log  syslog:server=unix:/dev/log,severity=notice main;
+
+    #tcp_nopush           on;
+    keepalive_timeout     65;
+    gzip                  on;
+    gzip_static on;
+    gzip_proxied        expired no-cache no-store private auth;
+    gzip_disable        "MSIE [1-6]\.";
+    gzip_vary           on;
+    gzip_http_version 1.0;
+    gzip_comp_level 2;
+    gzip_min_length 1100;
+    gzip_buffers     4 8k;
+    gzip_proxied any;
+    gzip_types
+        # text/html is always compressed by HttpGzipModule
+        text/css
+        text/javascript
+        text/xml
+        text/plain
+        text/x-component
+        application/javascript
+        application/json
+        application/xml
+        application/rss+xml
+        font/truetype
+        font/opentype
+        application/vnd.ms-fontobject
+        image/svg+xml;
+
+    server_tokens         off;
+
+    server {
+        listen              {{item.ip}}:80;
+        server_name         {{item.domain}} {{item.ip}} default _ "";
+
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
+        return 302 https://{{item.domain}};
+    }
+
+    server {
+        listen                      {{item.ip}}:443 ssl;
+        server_name                 default {{item.ip}} _ "";
+        ssl_prefer_server_ciphers   on;
+        ssl_session_timeout         5m;
+
+        ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
+        ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+        ssl_dhparam               /etc/ssl/private/dhparam.pem;
+
+        ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
+        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_session_cache         builtin:1000  shared:SSL:10m;
+
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains";
+        add_header X-Frame-Options DENY;
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
+        return 302 https://{{item.domain}};
+    }
+
+    server {
+        listen                    {{item.ip}}:443 ssl;
+        server_name               {{item.domain}};
+        root                      {{item.root}};
+        ssl_prefer_server_ciphers on;
+        ssl_session_timeout       5m;
+
+        ssl_certificate           /etc/nginx/{{item.domain}}-server.crt;
+        ssl_certificate_key       /etc/nginx/{{item.domain}}-server.key;
+        ssl_dhparam               /etc/ssl/private/dhparam.pem;
+
+        ssl_ciphers               'AES256+EECDH:AES256+EDH:!aNULL';
+        ssl_protocols             TLSv1 TLSv1.1 TLSv1.2;
+        ssl_session_cache         builtin:1000  shared:SSL:10m;
+
+        add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+        add_header X-Content-Type-Options nosniff always;
+        add_header X-XSS-Protection "1; mode=block" always;
+        add_header X-Frame-Options DENY always;
+        error_page 401 402 403 404 405 406 407 408 409 @errorphp;
+        error_page 410 411 412 413 414 415 416 417 418 419 @errorphp;
+        error_page 420 421 422 423 424 425 426 427 428 @errorphp;
+        error_page 400 429 /chill.html;
+        error_page 430 431 432 433 434 435 436 437 438 439 @errorphp;
+        error_page 440 441 442 443 444 445 446 447 448 449 @errorphp;
+        error_page 450 451 452 453 454 455 456 457 458 459 @errorphp;
+        error_page 460 461 462 463 464 465 466 467 468 469 @errorphp;
+        error_page 470 471 472 473 474 475 476 477 478 479 @errorphp;
+        error_page 480 481 482 483 484 485 486 487 488 489 @errorphp;
+        error_page 490 491 492 493 494 495 496 497 498 @errorphp;
+        error_page 502 503 @maintenance;
+        # php errors
+        error_page 500 @error500;
+        # not implemented
+        error_page 501 @error501;
+        # Gateway timeout
+        error_page 504 @error504;
+        # version not supported
+        error_page 505 @error505;
+
+        # 499 is only allowed to be used by nginx
+        # this is needed for redirect to work
+        merge_slashes off;
+        # this ensures our urls are cleaned of multiple slashes
+        rewrite (.*)//(.*) $1/$2 permanent;
+
+        location @maintenance {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /dt.html break;
+                internal;
+        }
+        location @error500 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /500.html break;
+                internal;
+        }
+        location @error501 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /501.html break;
+                internal;
+        }
+        location @error504 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /504.html break;
+                internal;
+        }
+        location @error505 {
+                add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+                add_header X-Content-Type-Options nosniff always;
+                add_header X-XSS-Protection "1; mode=block" always;
+                add_header X-Frame-Options DENY always;
+                add_header Retry-After 600 always;
+                rewrite ^(.*)$ /505.html break;
+                internal;
+        }
+
+        # disable direct access to dt.html
+        location = /dt.html {
+            return 404;
+        }
+        location = /429.html {
+            return 404;
+        }
+        location = /500.html {
+            return 404;
+        }
+        location = /501.html {
+            return 404;
+        }
+        location = /504.html {
+            return 404;
+        }
+        location = /505.html {
+            return 404;
+        }
+        location ~ /\.ht {
+            return 404;
+        }
+
+        location /contrib/ {
+        	autoindex on;
+        }
+
+        location /.well-known/acme-challenge/ {
+            rewrite ^/.well-known/acme-challenge/(.*) /$1 break;
+            root /acme;
+        }
+
+        # avoid processing of calls to non-existing static files by yii
+        location ~* \.(?:ico|css|woff2|exe|fla|gif|jpe?g|jpg|js|mov|pdf|png|rar|svg|swf|tgz|txt|xml|zip)$ {
+            try_files $uri =404;
+            access_log off;
+            log_not_found off;
+            expires 1M;
+            add_header Cache-Control "public";
+            add_header Strict-Transport-Security "max-age=63072000; includeSubDomains" always;
+            add_header X-Content-Type-Options nosniff always;
+            add_header X-XSS-Protection "1; mode=block" always;
+            add_header X-Frame-Options DENY always;
+        }
+
+        set $yii_bootstrap "/index.php";
+
+        # Rate limit /api to 10 requests/sec
+        # This is way too loose
+        location /api {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=Api;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        # Rate limit resend-verification-email to 10 requests per minute
+        # There is no reason why anyone would need more than that for a
+        # legitimate purpose
+        location /resend-verification-email {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=ResendVerificationEmail;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        # Rate limit register to 10 requests per minute
+        # There is no reason why anyone would need more than that for a
+        # legitimate purpose
+        location /register {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=Register;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        # Rate limit register to 20 requests per minute
+        location /login {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=Login;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        # Rate limit claim to 100 requests per minute it loads on
+        # almost every page
+        location /claim {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=Claim;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        location /request-password-reset {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=RequestPasswordReset;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        location /reset-password {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=ResetPassword;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+        location /verify-email {
+            limit_req_status 429;
+            limit_conn_status 429;
+            limit_req zone=VerifyEmail;
+            index  index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        location / {
+            index  index.html index.php;
+            try_files $uri $uri/ /index.php$is_args$args;
+        }
+
+        # return 404 for direct access to php files
+        location ~ \.php$ {
+            return 404;
+        }
+
+        location = /index.php {
+            try_files $uri =404;
+            fastcgi_split_path_info ^(.+\.php)(.*)$;
+
+            # let yii catch the calls to non-existing PHP files
+            set $fsn /$yii_bootstrap;
+            set $yiiargs r=$request_uri;
+            if (-f $document_root$fastcgi_script_name){
+                set $fsn $fastcgi_script_name;
+                set $yiiargs $query_string;
+            }
+
+            fastcgi_pass {{item.fpm}};
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME  $document_root$fsn;
+
+            # NGiNX allowed duplicate HOST headers to be set, the following is
+            # a workaround for these cases.
+            fastcgi_param HTTP_HOST "{{item.domain}}";
+
+            #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
+            fastcgi_param PATH_INFO        $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED  $document_root$fsn;
+            fastcgi_param QUERY_STRING $yiiargs;
+            fastcgi_intercept_errors on;
+        }
+
+        location @errorphp {
+            internal;
+            fastcgi_split_path_info ^(.+\.php)(.*)$;
+
+            # let yii catch the calls to non-existing PHP files
+            set $fsn /$yii_bootstrap;
+            set $yiiargs r=$request_uri;
+            if (-f $document_root$fastcgi_script_name){
+                set $fsn $fastcgi_script_name;
+                set $yiiargs $query_string;
+            }
+
+            fastcgi_pass {{item.fpm}};
+            include fastcgi_params;
+            fastcgi_param SCRIPT_FILENAME  $document_root$fsn;
+
+            # NGiNX allowed duplicate HOST headers to be set, the following is
+            # a workaround for these cases.
+            fastcgi_param HTTP_HOST "{{item.domain}}";
+
+            #PATH_INFO and PATH_TRANSLATED can be omitted, but RFC 3875 specifies them for CGI
+            fastcgi_param PATH_INFO        $fastcgi_path_info;
+            fastcgi_param PATH_TRANSLATED  $document_root$fsn;
+            fastcgi_param QUERY_STRING $yiiargs;
+            fastcgi_intercept_errors off;
+        }
+
+    }
+}

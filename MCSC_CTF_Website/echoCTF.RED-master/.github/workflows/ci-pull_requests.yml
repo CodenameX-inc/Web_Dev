@@ -1,0 +1,57 @@
+name: ci-pull_requests
+
+on:
+  pull_request:
+    types: [ opened, edited, reopened, synchronize ]
+    branches: [ master ]
+    paths-ignore:
+    - '**.md'
+    - '.mkdocs.yml'
+    - 'docs/**'
+
+jobs:
+  phpcomposer:
+    runs-on: ubuntu-20.04
+    env:
+      DOCKER_BUILDKIT: 0
+      BUILDKIT_PROGRESS: plain
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check if packagist is up and if not use a mirror...
+      run: nc -N -w1 asset-packagist.org 443 || composer config -g repos.packagist composer https://packagist.fi
+
+    - name: Configure github token
+      run: composer config -g github-oauth.github.com "${{ secrets.GITHUB_TOKEN }}"
+
+    - name: Validate frontend composer.json and composer.lock
+      run: |
+        cd frontend
+        composer validate
+
+    - name: Validate backend composer.json and composer.lock
+      run: |
+        cd backend
+        composer validate
+
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+
+    - name: Install backend dependencies
+      run: |
+        cd backend
+        php7.4 /usr/bin/composer update --no-dev --prefer-dist --no-progress
+
+    - name: Build the all-in-one Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile --tag echothrust/echoctf.red-all-in-one:latest
+    - name: Build the DB Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-mariadb --tag echothrust/echoctf.red-db:latest
+    - name: Build the frontend Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-frontend --tag echothrust/echoctf.red-frontend:latest
+    - name: Build the backend Docker image
+      run: docker build --no-cache . --file contrib/Dockerfile-backend --tag echothrust/echoctf.red-backend:latest
+    - name: Build the vpn Docker image
+      run: docker build  --no-cache . --file contrib/Dockerfile-vpn --tag echothrust/echoctf.red-vpn:latest

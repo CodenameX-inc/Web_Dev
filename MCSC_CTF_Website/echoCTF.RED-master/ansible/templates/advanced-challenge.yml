@@ -1,0 +1,28 @@
+---
+author: [profile id] # Your profile id number eg 31337
+name: "Challenge name"
+category: Tutorial
+difficulty: easy
+player_type: offense
+timer: 0 # 0 Dont keep timer, 1 keep timer
+active: 1 # 1 = Active, 0 = Not active
+public: 1 # If the challenge is publicly accessible
+description: |
+  <p>multiline
+  description,
+  must
+  keep the same
+  indentation
+  of lines</p>
+
+# empty line ends the description
+questions:
+  - "{{lookup('file','question1.yml') | from_yaml}}" # Include the 1st question from another yml
+  - "{{lookup('file','question2.json') | from_json}}" # include the 2nd question from a json file
+  - { # We can also have mixed files and questions
+       name: "3nd question name",
+       description: "3nd question description",
+       points: 100,
+       code: "answer3",
+       weight: 1,
+    }

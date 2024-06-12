@@ -1,0 +1,38 @@
+set ruleset-optimization none
+set optimization aggressive
+set block-policy return
+set limit states 90000000
+set limit src-nodes 50000
+set limit tables 10000
+set limit table-entries 10000000
+set reassemble yes no-df
+set timeout { tcp.closed 30, tcp.closing 300, tcp.finwait 15, tcp.first 60, tcp.opening 15, adaptive.start 20000 }
+
+
+table <administrators> persist counters file "/etc/administrators.conf"
+table <maintenance> persist counters file "/etc/maintenance.conf"
+table <moderators> persist counters file "/etc/moderators.conf"
+table <service_clients> persist counters file "/etc/service_clients.conf"
+table <docker_clients> persist counters file "/etc/docker_clients.conf"
+table <docker_servers> persist counters file "/etc/docker_servers.conf"
+table <registry_clients> persist counters file "/etc/registry_clients.conf"
+table <registry_servers> persist counters file "/etc/registry_servers.conf"
+table <targets> persist counters file "/etc/targets.conf"
+table <offense_activated> persist counters { 10.10.0.0/16 }
+table <offense_network> persist counters { 10.10.0.0/16 }
+table <heartbeat> persist counters
+table <banned> persist counters
+
+set skip on lo
+
+match all scrub (no-df max-mss 1440)
+match out on egress nat-to (egress:0)
+match on tun from <offense_activated> tag OFFENSE_REGISTERED
+
+block return quick to { 239.255.255.250, 224/8 }
+block return log
+block drop in log quick from <banned>
+pass quick from <administrators> label "administrators"
+pass quick from (self) label "selforigin"
+
+include "/etc/service.pf.conf"

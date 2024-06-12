@@ -1,0 +1,32 @@
+#Sitemap: https://echoCTF.RED/sitemap.xml
+# 3 day delay
+User-agent: AhrefsBot
+Crawl-Delay: 259200
+# all others 1 day
+User-agent: *
+Crawl-delay: 86400
+# generic
+Disallow: /assets/
+# changelog
+Disallow: /changelog
+Disallow: /changelog?
+Disallow: /changelog/
+Disallow: /changelog/?
+# logout
+Disallow: /logout?
+Disallow: /logout/
+Disallow: /logout/?
+# verify mail
+Disallow: /verify-email
+Disallow: /verify-email?
+Disallow: /verify-email/
+Disallow: /verify-email/?
+Allow: /help/faq
+Allow: /help/rules
+Allow: /help/instructions
+# CSS, JS, Images
+Allow: /css/
+Allow: /js/
+Allow: /fonts/
+Allow: /webfonts/
+Allow: /images/

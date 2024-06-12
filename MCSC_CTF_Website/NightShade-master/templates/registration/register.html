@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Create an account{% endblock %}
+
+{% block content %}
+    <div class="">
+        <h4 class="login-title">Register</h4>
+        <div class="challenge-subtitle"> 
+                <p> Note: Username can only contain alphanumeric, _, @, . and - characters </p>
+        </div>
+        <form class="input-flag" action="" role="form" method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="username">User Name</label>
+                <input type="text"
+                       name="username"
+                       maxlength="30"
+                       id="id_username"
+                       class="form-control"
+                       placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label for="password1">Password</label>
+                <input type="password"
+                       name="password1"
+                       id="id_password1"
+                       placeholder="Password"
+                       class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password2">Re-Enter Password</label>
+                <input type="password"
+                       name="password2"
+                       id="id_password2"
+                       placeholder="Confirm Password"
+                       class="form-control">
+            </div>
+            <button type="submit"
+                    class="input-flag-button">
+                Submit
+            </button>
+        </form>
+    </div>
+
+{% endblock %}
+
+{% block modalTriggers %}
+    $('#registerModal').modal('show');
+{% endblock %}

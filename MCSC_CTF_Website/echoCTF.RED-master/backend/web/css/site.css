@@ -1,0 +1,111 @@
+html,
+body {
+    height: 100%;
+    font-size: 0.95em;
+}
+
+.wrap {
+  min-height: 100%;
+  height: auto;
+}
+
+.wrap > .container {
+    padding-top: 20px;
+}
+
+.footer {
+  height: 60px;
+  background-color: #f5f5f5;
+  border-top: 1px solid #ddd;
+  padding-top: 20px;
+}
+
+a {
+  text-decoration: none;
+}
+
+a.asc:after, a.desc:after {
+  position: relative;
+  top: 1px;
+  display: inline-block;
+  font-family: 'bootstrap-icons';
+  font-style: normal;
+  font-weight: normal;
+  line-height: 1;
+  padding-left: 5px;
+}
+
+a.asc:after {
+  content: "\F574";
+}
+
+a.desc:after {
+  content: "\F575";
+}
+
+.dropdown.nav-item  button.btn.btn-link.logout {
+  text-decoration: none;
+  color: #ddd;
+  font-weight: 600;
+}
+
+.not-set {
+  color: #c55;
+  font-style: italic;
+}
+
+.bi-target-status-online::before { content: "\F287"; color: greenyellow; }
+.bi-target-status-offline::before { content: "\F28A"; color: red; }
+.bi-target-status-powerup::before { content: "\F4F6"; color: goldenrod; }
+.bi-target-status-powerdown::before { content: "\F4F7"; color: orangered; }
+
+.fa-nf-claims:before { content: "\f024"; }
+.fa-nf-failed_claims:before { content: "\f11e"; }
+.fa-nf-failed_login:before { content: "\f071"; }
+.grid-view th { white-space: nowrap; }
+
+.approved_avatar>img { border: 1px solid lightgray; }
+.pending_avatar>img { border: 1px solid orangered; }
+
+.wordwrap {
+  white-space: pre; /* CSS 2.0 */
+  white-space: pre-wrap; /* CSS 2.1 */
+  white-space: pre-line; /* CSS 3.0 */
+  white-space: -pre-wrap; /* Opera 4-6 */
+  white-space: -o-pre-wrap; /* Opera 7 */
+  white-space: -moz-pre-wrap; /* Mozilla */
+  word-wrap: break-word; /* IE 5+ */
+}
+
+.icon {
+  width: 3rem;
+  height: 3rem;
+}
+
+.icon i {
+  font-size: 2.25rem;
+}
+
+.icon-shape {
+  display: inline-flex;
+  padding: 12px;
+  text-align: center;
+  border-radius: 50%;
+  align-items: center;
+  justify-content: center;
+}
+
+div.has-error {
+  border: 1px dashed red;
+  padding: 4px;
+}
+div.has-error > input {
+  background-color: lightpink;
+}
+div.has-error > input:focus {
+  background-color: lightpink;
+}
+.help-block {
+  color: red;
+  font-weight: 600;
+}
