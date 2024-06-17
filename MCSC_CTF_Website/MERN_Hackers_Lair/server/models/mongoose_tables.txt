@@ -1,0 +1,283 @@
+create similar tables in oracle sq; like mongodb models as below:
+
+const mongoose = require("mongoose");
+
+const SubSectionSchema = new mongoose.Schema({
+	title: { type: String },
+	timeDuration: { type: String },
+	description: { type: String },
+	videoUrl: { type: String },
+});
+
+module.exports = mongoose.model("SubSection", SubSectionSchema);
+
+const mongoose = require("mongoose");
+
+// Define the Section schema
+const sectionSchema = new mongoose.Schema({
+	sectionName: {
+		type: String,
+	},
+	subSection: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: "SubSection",
+		},
+	],
+});
+
+// Export the Section model
+module.exports = mongoose.model("Section", sectionSchema);
+
+const mongoose = require("mongoose")
+
+const courseProgress = new mongoose.Schema({
+  courseID: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Course",
+  },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "user",
+  },
+  completedVideos: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "SubSection",
+    },
+  ],
+})
+
+module.exports = mongoose.model("courseProgress", courseProgress)
+
+// Import the Mongoose library
+const mongoose = require("mongoose");
+
+// Define the user schema using the Mongoose Schema constructor
+const userSchema = new mongoose.Schema(
+	{
+		// Define the name field with type String, required, and trimmed
+		firstName: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		lastName: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+		// Define the email field with type String, required, and trimmed
+		email: {
+			type: String,
+			required: true,
+			trim: true,
+		},
+
+		// Define the password field with type String and required
+		password: {
+			type: String,
+			required: true,
+		},
+		// Define the role field with type String and enum values of "Admin", "Student", or "Visitor"
+		accountType: {
+			type: String,
+			enum: ["Admin", "Student", "Instructor"],
+			required: true,
+		},
+		active: {
+			type: Boolean,
+			default: true,
+		},
+		approved: {
+			type: Boolean,
+			default: true,
+		},
+		additionalDetails: {
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: "Profile",
+		},
+		courses: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "Course",
+			},
+		],
+		token: {
+			type: String,
+		},
+		resetPasswordExpires: {
+			type: Date,
+		},
+		image: {
+			type: String,
+			required: true,
+		},
+		courseProgress: [
+			{
+				type: mongoose.Schema.Types.ObjectId,
+				ref: "courseProgress",
+			},
+		],
+
+		// Add timestamps for when the document is created and last modified
+	},
+	{ timestamps: true }
+);
+
+// Export the Mongoose model for the user schema, using the name "user"
+module.exports = mongoose.model("user", userSchema);
+
+const mongoose = require("mongoose");
+
+// Define the Tags schema
+const categorySchema = new mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+	},
+	description: { type: String },
+	//TODO:FK
+	courses: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Course",
+		},
+	],
+});
+
+// Export the Tags model
+module.exports = mongoose.model("Category", categorySchema);
+
+const mongoose = require("mongoose");
+
+// Define the Profile schema
+const profileSchema = new mongoose.Schema({
+	gender: {
+		type: String,
+	},
+	dateOfBirth: {
+		type: String,
+	},
+	about: {
+		type: String,
+		trim: true,
+	},
+	contactNumber: {
+		type: Number,
+		trim: true,
+	},
+});
+
+// Export the Profile model
+module.exports = mongoose.model("Profile", profileSchema);
+
+const OTPSchema = new mongoose.Schema({
+	email: {
+		type: String,
+		required: true,
+	},
+	otp: {
+		type: String,
+		required: true,
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now,
+		expires: 60 * 5, // The document will be automatically deleted after 5 minutes of its creation time
+	},
+});
+
+const mongoose = require("mongoose");
+
+// Define the Courses schema
+const coursesSchema = new mongoose.Schema({
+	courseName: { type: String },
+	courseDescription: { type: String },
+	instructor: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: "user",
+	},
+	whatYouWillLearn: {
+		type: String,
+	},
+	courseContent: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "Section",
+		},
+	],
+	ratingAndReviews: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			ref: "RatingAndReview",
+		},
+	],
+	price: {
+		type: Number,
+	},
+	thumbnail: {
+		type: String,
+	},
+	tag: {
+		type: [String],
+		required: true,
+	},
+	category: {
+		type: mongoose.Schema.Types.ObjectId,
+		// required: true,
+		ref: "Category",
+	},
+	studentsEnrolled: [
+		{
+			type: mongoose.Schema.Types.ObjectId,
+			required: true,
+			ref: "user",
+		},
+	],
+	instructions: {
+		type: [String],
+	},
+	status: {
+		type: String,
+		enum: ["Draft", "Published"],
+	},
+	createdAt: {
+		type:Date,
+		default:Date.now
+	},
+});
+
+// Export the Courses model
+module.exports = mongoose.model("Course", coursesSchema);
+
+const mongoose = require("mongoose");
+
+// Define the RatingAndReview schema
+const ratingAndReviewSchema = new mongoose.Schema({
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: "user",
+	},
+	rating: {
+		type: Number,
+		required: true,
+	},
+	review: {
+		type: String,
+		required: true,
+	},
+	course: {
+		type: mongoose.Schema.Types.ObjectId,
+		required: true,
+		ref: "Course",
+		index: true,
+	},
+});
+
+// Export the RatingAndReview model
+module.exports = mongoose.model("RatingAndReview", ratingAndReviewSchema);

@@ -7,6 +7,7 @@ const categorySchema = new mongoose.Schema({
 		required: true,
 	},
 	description: { type: String },
+	//TODO:FK
 	courses: [
 		{
 			type: mongoose.Schema.Types.ObjectId,

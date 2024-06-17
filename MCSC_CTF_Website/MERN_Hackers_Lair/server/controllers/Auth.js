@@ -6,6 +6,7 @@ const otpGenerator = require("otp-generator");
 const mailSender = require("../utils/mailSender");
 const { passwordUpdated } = require("../mail/templates/passwordUpdate");
 const Profile = require("../models/Profile");
+const connection = require('../database/database.js');
 require("dotenv").config();
 
 exports.signup = async (req, res) => {
@@ -44,7 +45,7 @@ exports.signup = async (req, res) => {
       });
     }
 
-    // Check if user already exists
+    //TODO: Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({
