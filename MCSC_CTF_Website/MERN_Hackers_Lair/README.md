@@ -1,27 +1,23 @@
-### Website link:- [[https://beamish-gingersnap-dc31d3.netlify.app/](https://code24x.netlify.app/)](https://code24x.netlify.app/)
+ ***Hacker's Lair*** An Cybersecurity based Ed Tech Platform
 
-CodeX - An Ed Tech Platform
-
-CodeX is an Ed Tech platform built using React, Express.js, and MongoDB. It aims to provide an interactive and user-friendly learning experience for students and educators alike.
-
-
-Features
-Interactive Courses: Engaging and interactive courses covering various subjects.
-User Profiles: Personalized user profiles for tracking progress and achievements.
-Quizzes and Assessments: Interactive quizzes and assessments for self-evaluation.
-Discussion Forums: Collaborative discussion forums for students and educators.
-Real-time Progress Tracking: Monitor your progress in real-time.
-Responsive Design: Accessible on all devices, including desktop, tablet, and mobile.
+## Features
+- Interactive Courses: Engaging and interactive courses covering various subjects.
+- User Profiles: Personalized user profiles for tracking progress and achievements.
+- Quizzes and Assessments: Interactive quizzes and assessments for self-evaluation.
+- Discussion Forums: Collaborative discussion forums for students and educators.
+- Real-time Progress Tracking: Monitor your progress in real-time.
+- Responsive Design: Accessible on all devices, including desktop, tablet, and mobile.
 
 
-
-
-Project Link
-Explore CodeX:
-
-
-
-Tech Stack
-Frontend: React
+## Tech Stack
+Frontend: React, Tailwindcss 
 Backend: Express.js
-Database: MongoDB
+Database: Oracle SQL 
+
+## Setup:
+
+run npm install inside both root and server folder separately
+
+then run `npm run dev` in the project root directory to run it
+
+setup the oracle database as instructed in the setup_db file
