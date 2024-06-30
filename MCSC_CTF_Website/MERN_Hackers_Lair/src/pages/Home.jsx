@@ -34,12 +34,12 @@ function Home() {
         {/* Heading */}
         <div className="text-center text-4xl font-semibold">
           Empower Your Future with
-          <FocusText text={" Coding Skills"} />
+          <FocusText text={" Cyber Skills"} />
         </div>
 
         {/* Sub Heading */}
         <div className="-mt-3 w-[90%] text-center text-lg font-bold text-richblack-300">
-          With our online coding courses, you can learn at your own pace, from
+          With our online cybersecurity and coding courses, you can learn at your own pace, from
           anywhere in the world, and get access to a wealth of resources,
           including hands-on projects, quizzes, and personalized feedback from
           instructors.
@@ -51,14 +51,14 @@ function Home() {
             Learn More
           </CTAButton>
           <CTAButton active={false} linkto={"/login"}>
-            Book a Demo
+            Start Learning
           </CTAButton>
         </div>
 
         {/* Video */}
         <div className="mx-3 my-7 shadow-[10px_-5px_50px_-5px] shadow-blue-200 border-blue-50 border-r-4 border-t-4 border-opacity-50">
           <div>
-            <video muted loop autoPlay>
+            <video loop autoPlay>
               <source src={Banner} type="video/mp4" />
             </video>
           </div>
@@ -71,7 +71,7 @@ function Home() {
             heading={
               <div className="text-4xl font-semibold">
                 Unlock your
-                <HighlightText text={"coding potential"} /> with our online
+                <HighlightText text={"unique potential"} /> with our online
                 courses.
               </div>
             }
@@ -156,7 +156,7 @@ function Home() {
             </div>
             <div className="flex flex-col items-start gap-10 lg:w-[40%]">
               <div className="text-[16px]">
-                The modern StudyNotion is the dictates its own terms. Today, to
+                The modern CyberCafe (hacker's lair) is the dictates its own terms. Today, to
                 be a competitive specialist requires more than professional
                 skills.
               </div>

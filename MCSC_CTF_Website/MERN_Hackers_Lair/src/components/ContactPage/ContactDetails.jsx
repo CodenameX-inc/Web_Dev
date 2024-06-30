@@ -6,9 +6,9 @@ import * as Icon2 from "react-icons/io5"
 const contactDetails = [
   {
     icon: "HiChatBubbleLeftRight",
-    heading: "Chat on us",
+    heading: "Chat with us",
     description: "Our friendly team is here to help.",
-    details: "info@studynotion.com",
+    details: "202214024@student.mist.ac.bd",
   },
   {
     icon: "BiWorld",

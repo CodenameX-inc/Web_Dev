@@ -1,5 +1,5 @@
 const oracledb = require('oracledb');
-const { connection } = require('./database.js');
+const { connection } = require('../database.js');
 
 // Function to find OTP by email
 async function findOTP(email) {

@@ -26,6 +26,7 @@ function loadScript(src) {
   });
 }
 
+//TODO: add a payment gateway compatible with BD
 export async function buyCourse(
   token,
   courses,
@@ -65,7 +66,7 @@ export async function buyCourse(
       currency: orderResponse.data.data.currency,
       amount: `${orderResponse.data.data.amount}`,
       order_id: orderResponse.data.data.id,
-      name: "StudyNotion",
+      name: "Hackers_Lair",
       description: "Thank You for Purchasing the Course",
       image: rzpLogo,
       prefill: {

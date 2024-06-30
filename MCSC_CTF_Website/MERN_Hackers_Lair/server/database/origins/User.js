@@ -66,35 +66,18 @@ async function getUserID(email) {
     }
 }
 
-async function finduserID(userid) {
-    let db;
-    try {
-        db = await connection();
-        const sql = `SELECT "USER_ID" FROM MCSC.USERS WHERE "USER_ID" = :val1`;
-        const res = await db.execute(sql, {
-            val1: userid
-        });
-
-        if (res.rows.length === 0) {
-            console.log("User not found");
-            return null;
-        }
-
-        const retrievedUser = res.rows[0];
-        return retrievedUser;
-    } catch (e) {
-        console.error("Error:", e.message);
-        return null;
-    } finally {
-        if (db) {
-            try {
-                await db.close();
-            } catch (e) {
-                console.error("Error:", e.message);
-            }
-        }
+async function finduserID(userid, instr=false) {
+    let sql;
+    if(!instr){
+        //for use in changePassword() in Auth.js 
+        sql = `SELECT * FROM MCSC.USERS WHERE "USER_ID" = :val1`;
+        query(sql, {val1: userid}, "User not found", "User found! ");
+    }else {
+        //for use in createCourse() to get instr info in Course.js
+        const sql = `SELECT "USER_ID", "FIRST_NAME" || ' '|| "LAST_NAME" AS FULLNAME, "EMAIL" FROM MCSC.USERS WHERE "ACCOUNT_TYPE" = 'Instructor' AND "USER_ID" = :val1`;
+        query(sql, {val1: userid}, "Instr not found", "Instr found! ");
     }
-}
+    }
 
 async function updatePassword(userid, password) {
     let db;

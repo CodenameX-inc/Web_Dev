@@ -1,5 +1,5 @@
 const { Mongoose } = require("mongoose");
-const {addCategory, showAllCat, showCatWithCourse} = require("./origins/Cat.js")
+const {addCategory, showAllCat, showCatWithCourse, getMostSellingCourses} = require("./origins/Cat.js")
 const Category = require("../models/Category");
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
@@ -71,36 +71,11 @@ exports.categoryPageDetails = async (req, res) => {
       }
   
       // Get courses for other categories
-      const categoriesExceptSelected = await Category.find({
-        _id: { $ne: categoryId },
-      })
-      let differentCategory = await Category.findOne(
-        categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)]
-          ._id
-      )
-        .populate({
-          path: "courses",
-          match: { status: "Published" },
-        })
-        .exec()
-        //console.log("Different COURSE", differentCategory)
+      const differentCategory = await showCatWithCourse(categoryId, false);
+      //console.log("Different COURSE", differentCategory)
+      
       // Get top-selling courses across all categories 
-      //TODO: find all categories
-      const allCategories = await Category.find()
-        .populate({
-          path: "courses",
-          match: { status: "Published" },
-          populate: {
-            path: "instructor",
-        },
-        })
-        .exec()
-      //TODO: get all courses in a category
-      const allCourses = allCategories.flatMap((category) => category.courses)
-      //TODO: sort all the courses by amount of ones sold (in descending order)
-      const mostSellingCourses = allCourses
-        .sort((a, b) => b.sold - a.sold)
-        .slice(0, 10)
+      const mostSellingCourses = await getMostSellingCourses({fetchAtmost:10});
        // console.log("mostSellingCourses COURSE", mostSellingCourses)
       res.status(200).json({
         success: true,

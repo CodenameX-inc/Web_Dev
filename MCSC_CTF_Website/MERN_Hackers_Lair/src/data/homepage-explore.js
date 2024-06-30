@@ -1,3 +1,4 @@
+//TODO: Fetch all these course info from Database
 export const HomePageExplore = [
     {
         tag: 'Free',
