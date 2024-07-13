@@ -1,5 +1,5 @@
-const { Mongoose } = require("mongoose");
-const Category = require("../models/Category");
+// const { Mongoose } = require("mongoose");
+const {addCategory, showAllCat, showCatWithCourse, getMostSellingCourses} = require("../database/origins/Cat.js")
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
   }
@@ -12,11 +12,8 @@ exports.createCategory = async (req, res) => {
 				.status(400)
 				.json({ success: false, message: "All fields are required" });
 		}
-    //TODO: create new category 
-		const CategorysDetails = await Category.create({
-			name: name,
-			description: description,
-		});
+    // create new category 
+		const CategorysDetails = await addCategory(name, description);
 		console.log(CategorysDetails);
 		return res.status(200).json({
 			success: true,
@@ -32,9 +29,9 @@ exports.createCategory = async (req, res) => {
 
 exports.showAllCategories = async (req, res) => {
 	try {
-        console.log("INSIDE SHOW ALL CATEGORIES");
-    //TODO: get all categories
-		const allCategorys = await Category.find({});
+    console.log("INSIDE SHOW ALL CATEGORIES");
+    //get all categories
+		const allCategorys = await showAllCat();
 		res.status(200).json({
 			success: true,
 			data: allCategorys,
@@ -48,20 +45,13 @@ exports.showAllCategories = async (req, res) => {
 };
 
 //categoryPageDetails 
-
 exports.categoryPageDetails = async (req, res) => {
     try {
       const { categoryId } = req.body
       console.log("PRINTING CATEGORY ID: ", categoryId);
-      //TODO: Get courses for the specified category by categoryId
-      const selectedCategory = await Category.findById(categoryId)
-        .populate({
-          path: "courses",
-          match: { status: "Published" },
-          populate: "ratingAndReviews",
-        })
-        .exec()
-  
+      //Get courses for the specified category by categoryId
+      const selectedCategory = await showCatWithCourse(categoryId);
+
       //console.log("SELECTED COURSE", selectedCategory)
       // Handle the case when the category is not found
       if (!selectedCategory) {
@@ -80,36 +70,11 @@ exports.categoryPageDetails = async (req, res) => {
       }
   
       // Get courses for other categories
-      const categoriesExceptSelected = await Category.find({
-        _id: { $ne: categoryId },
-      })
-      let differentCategory = await Category.findOne(
-        categoriesExceptSelected[getRandomInt(categoriesExceptSelected.length)]
-          ._id
-      )
-        .populate({
-          path: "courses",
-          match: { status: "Published" },
-        })
-        .exec()
-        //console.log("Different COURSE", differentCategory)
+      const differentCategory = await showCatWithCourse(categoryId, false);
+      //console.log("Different COURSE", differentCategory)
+      
       // Get top-selling courses across all categories 
-      //TODO: find all categories
-      const allCategories = await Category.find()
-        .populate({
-          path: "courses",
-          match: { status: "Published" },
-          populate: {
-            path: "instructor",
-        },
-        })
-        .exec()
-      //TODO: get all courses in a category
-      const allCourses = allCategories.flatMap((category) => category.courses)
-      //TODO: sort all the courses by amount of ones sold (in descending order)
-      const mostSellingCourses = allCourses
-        .sort((a, b) => b.sold - a.sold)
-        .slice(0, 10)
+      const mostSellingCourses = await getMostSellingCourses({fetchAtmost:10});
        // console.log("mostSellingCourses COURSE", mostSellingCourses)
       res.status(200).json({
         success: true,

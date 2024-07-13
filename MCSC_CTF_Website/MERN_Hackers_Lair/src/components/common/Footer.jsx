@@ -172,7 +172,7 @@ const Footer = () => {
             })}
           </div>
 
-          <div className="text-center">Made with ❤️ by iftee 2023</div>
+          <div className="text-center">hacker's lair</div>
         </div>
       </div>
     </div>

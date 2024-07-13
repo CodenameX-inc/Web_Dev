@@ -1,19 +1,16 @@
-const Course = require("../models/Course")
-const Category = require("../models/Category")
-const Section = require("../models/Section")
-const SubSection = require("../models/SubSection")
-const User = require("../models/User")
-const { uploadImageToCloudinary } = require("../utils/imageUploader")
-const CourseProgress = require("../models/CourseProgress")
-const { convertSecondsToDuration } = require("../utils/secToDuration")
-const { finduserID } = require("./origins/User")
-const {addCourse, getCourses, getPubCourses} = require("./origins/CourseDB")
+//TODO: uncomment the following after testing done
+const { uploadImageToCloudinary } = require("../utils/imageUploader.js")
+// const CourseProgress = require("../models/CourseProgress")
+const { convertSecondsToDuration } = require("../utils/secToDuration.js")
+const { finduserID, findInstructor } = require("./origins/User.js")
+const {addCourse, getCourses, getPubCourses} = require("./origins/CourseDB.js")
+const {showAllCat} = require("./origins/Cat.js")
 // Function to create a new course
 exports.createCourse = async (req, res) => {
   try {
     // Get user ID from request object
     const userId = req.user.id
-
+    console.log(req.user.id)
     // Get all required fields from request body
     let {
       courseName,
@@ -24,16 +21,31 @@ exports.createCourse = async (req, res) => {
       category,
       status,
       instructions: _instructions,
-    } = req.body
+    } = req.body;
+    console.log(
+      courseName,
+      courseDescription,
+      whatYouWillLearn,
+      price,
+      _tag,
+      category,
+      status,
+      _instructions)
     // Get thumbnail image from request files
     const thumbnail = req.files.thumbnailImage
 
     // Convert the tag and instructions from stringified Array to Array
-    const tag = JSON.parse(_tag)
-    const instructions = JSON.parse(_instructions)
+    // const tag = typeof _tag === 'string' ? JSON.parse(_tag) : { _tag: 'misc' };
+    // const instructions = typeof _instructions === 'string' ? JSON.parse(_instructions) : { _instructions: 'no instructions' };
+    
+    const sanitizedTag = _tag.trim();
+    // console.log('Sanitized Tag:', sanitizedTag);
+    const tag = (sanitizedTag);
 
-    console.log("tag", tag)
-    console.log("instructions", instructions)
+    const sanitizedInstructions = _instructions.trim();
+    const instructions = JSON.parse(sanitizedInstructions);
+    // console.log("tag", tag)
+    // console.log("instructions", instructions)
 
     // Check if any of the required fields are missing
     if (
@@ -46,6 +58,7 @@ exports.createCourse = async (req, res) => {
       !category ||
       !instructions.length
     ) {
+    //FIXME: always getting all courses mendatory
       return res.status(400).json({
         success: false,
         message: "All Fields are Mandatory",
@@ -55,8 +68,8 @@ exports.createCourse = async (req, res) => {
       status = "Draft"
     }
     //get user only if accountType is equal to 'Instructor', if yes take the id
-    const instructorDetails = await finduserID(userId, true);
-
+    const instructorDetails = await findInstructor(userId);
+    
     if (!instructorDetails) {
       return res.status(404).json({
         success: false,
@@ -81,6 +94,7 @@ exports.createCourse = async (req, res) => {
     )
     console.log(thumbnailImage)
     // Create a new course with the given details
+    //FIXME: 'query is not defined' error
     const newCourse = await addCourse({
       courseName,
       courseDescription,
@@ -93,30 +107,6 @@ exports.createCourse = async (req, res) => {
       status: status,
       instructions,
     })
-
-    //TODO: Add the new course to the User Schema of the Instructor
-    await User.findByIdAndUpdate(
-      {
-        _id: instructorDetails._id,
-      },
-      {
-        $push: {
-          courses: newCourse._id,
-        },
-      },
-      { new: true }
-    )
-    //TODO: Add the new course to the Categories
-    const categoryDetails2 = await Category.findByIdAndUpdate(
-      { _id: category },
-      {
-        $push: {
-          courses: newCourse._id,
-        },
-      },
-      { new: true }
-    )
-    console.log("HERE: ", categoryDetails2)
     // Return the new course and a success message
     res.status(200).json({
       success: true,

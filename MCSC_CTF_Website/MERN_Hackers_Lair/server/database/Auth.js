@@ -198,6 +198,7 @@ const sendotp = async function(req, res) {
       lowerCaseAlphabets: false,
       specialChars: false,
     });
+    
 
     let result = await findThisOTP(otp);
     console.log("OTP", otp);
@@ -211,7 +212,7 @@ const sendotp = async function(req, res) {
       });
       result = await findThisOTP(otp);
     }
-
+    console.log(result)
     const otpBody = await AddOTP({ email: email, otp: otp });
     console.log("OTP Body", otpBody);
 

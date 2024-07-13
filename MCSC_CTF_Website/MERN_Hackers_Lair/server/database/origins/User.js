@@ -70,13 +70,23 @@ async function finduserID(userid, instr=false) {
     let sql;
     if(!instr){
         //for use in changePassword() in Auth.js 
-        sql = `SELECT * FROM MCSC.USERS WHERE "USER_ID" = :val1`;
-        query(sql, {val1: userid}, "User not found", "User found! ");
+        sql = `SELECT * FROM MCSC.USERS WHERE "USER_ID" = :userid`;
+        const res = query(sql, {userid}, "User not found", "User found! ");
+        return res.rows;
     }else {
         //for use in createCourse() to get instr info in Course.js
-        const sql = `SELECT "USER_ID", "FIRST_NAME" || ' '|| "LAST_NAME" AS FULLNAME, "EMAIL" FROM MCSC.USERS WHERE "ACCOUNT_TYPE" = 'Instructor' AND "USER_ID" = :val1`;
-        query(sql, {val1: userid}, "Instr not found", "Instr found! ");
+        const sql = `SELECT "USER_ID", "FIRST_NAME" || ' '|| "LAST_NAME" AS FULLNAME, "EMAIL" FROM MCSC.USERS WHERE "ACCOUNT_TYPE" = 'Instructor' AND "USER_ID" = :userid`;
+        const res = query(sql, {userid}, "Instr not found", "Instr found! ");
+        return res.rows;
     }
+    }
+    async function findInstructor(userid){
+        const db = await connection();
+        const sql = `SELECT "USER_ID", "FIRST_NAME" || ' '|| "LAST_NAME" AS FULLNAME, "EMAIL" FROM MCSC.USERS WHERE "ACCOUNT_TYPE" = 'Instructor' AND "USER_ID" = :userid`;
+        const res = await db.execute(sql, {
+            userid
+        });
+        return res;
     }
 
 async function updatePassword(userid, password) {
@@ -147,5 +157,6 @@ module.exports = {
     getUserID,
     finduserID,
     updatePassword,
-    LoginUser
+    LoginUser,
+    findInstructor
 };

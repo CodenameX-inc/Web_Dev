@@ -1,6 +1,5 @@
-const { Mongoose } = require("mongoose");
+// const { Mongoose } = require("mongoose");
 const {addCategory, showAllCat, showCatWithCourse, getMostSellingCourses} = require("./origins/Cat.js")
-const Category = require("../models/Category");
 function getRandomInt(max) {
     return Math.floor(Math.random() * max)
   }

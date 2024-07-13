@@ -25,13 +25,32 @@ async function addCategory(name, desc) {
   }
 }
 
-async function showAllCat(id = -1) {
-  if (id <= 0) {
+async function showAllCat(id = "") {
+  if (id === "") {
     const sql = `SELECT NAME, DESCRIPTION, COURSES FROM MCSC.CATEGORY`;
     return queryWP(sql, "Cat.js: Failed to fetch all categories", "All selected");
   } else {
-    const sql = `SELECT NAME, DESCRIPTION, COURSES FROM MCSC.CATEGORY WHERE CATEGORY_ID = :v1`;
-    return query(sql, { v1: id }, "Cat.js: Failed to fetch all categories", `${id} selected`);
+    const sql = `SELECT NAME, DESCRIPTION, COURSES FROM MCSC.CATEGORY WHERE NAME = :v1`;
+    let db;
+    try {
+      db = await connection(); // Await connection
+      const res = await db.execute(sql, { v1: id}); // Await execute
+      if (res) {
+        console.log("Category FOUND")
+        return res.rows;
+      }
+    } catch (e) {
+      console.log("Error from Cat.js");
+      console.log("And the error: " + e.message);
+    } finally {
+      if (db) {
+        try {
+          await db.close();
+        } catch (e) {
+          console.error("Error closing database connection:", e.message);
+        }
+      }
+    }
   }
 }
 

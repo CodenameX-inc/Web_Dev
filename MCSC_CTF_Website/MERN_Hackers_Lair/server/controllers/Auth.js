@@ -1,9 +1,11 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const otpGenerator = require("otp-generator");
-//TODO: uncomment after testing done
-// const mailSender = require("../utils/mailSender");
-// const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+const mailSender = require("../utils/mailSender");
+const { passwordUpdated } = require("../mail/templates/passwordUpdate");
+// const { create, findOne, findById, findByIdAndUpdate } = require("../models/User");
+// const { findOne: _findOne, create: _create } = require("../models/OTP");
+// const { create: createProfile } = require("../models/Profile");
 const connection = require('../database/database.js');
 const { CreateUser, getUserID, finduserID, updatePassword } = require("../database/origins/User.js");
 const { findOTP, findThisOTP, AddOTP } = require("../database/origins/OTP.js");
@@ -60,13 +62,24 @@ const signup = async function(req, res) {
 
     // Find the most recent OTP for the email
     const otpQuery = await findOTP({ email });
+
     console.log(otpQuery);
     if (!otpQuery || otp !== otpQuery[0].otp) {
       // OTP not found or invalid OTP
-      return res.status(400).json({
-        success: false,
-        message: "The OTP is not valid",
-      });
+      
+    let otp = otpGenerator.generate(6, {
+      upperCaseAlphabets: false,
+      lowerCaseAlphabets: false,
+      specialChars: false,
+    });
+
+    otpQuery = await AddOTP({ email: email, otp: otp });
+    console.log("OTP Body", otpQuery);
+
+      // return res.status(400).json({
+      //   success: false,
+      //   message: "The OTP is not valid",
+      // });
     }
 
     // Hash the password
